@@ -1,0 +1,9 @@
+---
+
+- name: "{{ task_name }}: Gathering facts"
+  ios_facts:
+   gather_subset:
+     - '!all'
+     - '!min'
+   gather_network_resources: "{{ resources }}"
+  register: result

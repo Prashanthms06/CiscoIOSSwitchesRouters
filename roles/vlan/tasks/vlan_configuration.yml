@@ -1,0 +1,36 @@
+---
+- name: "VLANConfiguration: Ensuring config data conforms to the schema"
+  ansible.utils.validate:
+   data: "{{ config }}"
+   criteria: "{{ lookup('ansible.builtin.file', './vlan_schema_creation.json')}}"
+   engine: ansible.utils.jsonschema
+
+- name: "VLANConfiguration: Checking if the vlan ids are already existing"
+  fail:
+    msg: "vlan id {{ item.vlan_id }} already exists "
+  when: item.vlan_id|string in vlan_id_list
+  with_items: "{{ config }}"
+
+
+
+- name: "VLANConfiguration: Updating the config object with other parameters"
+  set_fact:
+    updated_config_list: []
+- name: "VLANConfiguration: Updating the config object with other parameters"
+  set_fact:
+    updated_config_list: "{{ updated_config_list }} + [ {'name': '{{ item.name }}','vlan_id': '{{ item.vlan_id }}', 'remote_span':'no','shutdown':'disabled','state':'active' } ]"
+  with_items: "{{ config }}"
+
+- name: "VLANConfiguration: Dumping the updated configuration"
+  debug:
+   var: updated_config_list
+
+- name: "VLANConfiguration: Pusing the vlan configuration configuration"
+  ios_vlans:
+   config: "{{ updated_config_list }}"
+   state: merged
+  register: result
+
+- name: "VLANConfiguration: Dumping the result"
+  debug:
+    var: result

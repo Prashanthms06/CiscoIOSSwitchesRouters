@@ -1,0 +1,5 @@
+---
+- include: prelim.yml
+  when: operation_type|upper=="VLAN_CONFIGURATION"
+
+- include: vlan_configuration.yml

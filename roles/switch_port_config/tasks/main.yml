@@ -1,5 +1,5 @@
 ---
 - include: prelim.yml
-  operation_type|upper=="SWITCH_PORT_CONFIGURATION"
+  when: operation_type|upper=="SWITCH_PORT_CONFIGURATION"
 
 - include: switch_port_configuration.yml

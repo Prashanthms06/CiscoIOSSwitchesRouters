@@ -1,17 +1,14 @@
 ---
 
+- name: "SwitchPortConfigurationPrelim: Validating if switch port config is provided or not"
+  fail:
+   msg: "Switch port configuration is not provided"
+  when: config is not defined
 
-# we need to gather the facts for the interfaces and create a list of interfaces.
-#with this list of interfaces, we can check if the user has provided a valid interface name or not.
-- name: "SwitchPortConfigurationPrelim: Gather only the interfaces resource facts and no legacy facts"
-  ios_facts:
-   gather_subset:
-     - '!all'
-     - '!min'
-   gather_network_resources:
-     - interfaces
-     - vlans
-  register: result
+- include: "../../common/tasks/gather_facts.yml"
+  vars:
+    task_name: "SwitchPortConfigurationPrelim"
+    resources: ["interfaces","vlans"]
 
 - name: "Dumping the results"
   debug:
@@ -28,7 +25,8 @@
 
 - name: "Building vlan id list"
   set_fact:
-   vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id }}' ]"
+    #convert the vlan_id to integer while putting into the list
+   vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id|int }}' ]"
   with_items: "{{ result.ansible_facts.ansible_network_resources.vlans }}"
 
 - name: "Dumping the interface list"
