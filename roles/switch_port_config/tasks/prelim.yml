@@ -1,0 +1,37 @@
+---
+
+
+# we need to gather the facts for the interfaces and create a list of interfaces.
+#with this list of interfaces, we can check if the user has provided a valid interface name or not.
+- name: "SwitchPortConfigurationPrelim: Gather only the interfaces resource facts and no legacy facts"
+  ios_facts:
+   gather_subset:
+     - '!all'
+     - '!min'
+   gather_network_resources:
+     - interfaces
+     - vlans
+  register: result
+
+- name: "Dumping the results"
+  debug:
+   var: result
+
+- name: "Building interface list"
+  set_fact:
+   interface_list: "{{ interface_list }} + [ '{{ item.name }}' ]"
+  with_items: "{{ result.ansible_facts.ansible_network_resources.interfaces }}"
+
+- name: "Dumping the interface list"
+  debug:
+   msg: "{{ interface_list }}"
+
+- name: "Building vlan id list"
+  set_fact:
+   vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id }}' ]"
+  with_items: "{{ result.ansible_facts.ansible_network_resources.vlans }}"
+
+- name: "Dumping the interface list"
+  debug:
+   msg: "{{ vlan_id_list }}"
+

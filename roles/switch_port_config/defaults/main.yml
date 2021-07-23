@@ -1,0 +1,8 @@
+---
+valid_state_values: ["merged","replaced","overridden","deleted"]
+#THe interface_list will be populated inside the prelim section
+interface_list: []
+vlan_id_list: []
+
+#This list will be populated through the config. And this list will be used for validation
+given_interface_list: []

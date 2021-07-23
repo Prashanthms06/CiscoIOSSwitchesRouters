@@ -1,0 +1,30 @@
+---
+- name: "SwitchPortConfiguration: Loading the schema"
+  ansible.builtin.set_fact:
+    criteria: "{{ lookup('ansible.builtin.file', './l2_interface_schema_creation.json')}}"
+
+- name: "SwitchPortConfiguration: Ensuring config data conforms to the schema"
+  ansible.utils.validate:
+   data: "{{ config }}"
+   criteria: "{{ criteria }}"
+   engine: ansible.utils.jsonschema
+
+- name: "SwitchPortConfiguration: Ensuring interfaces names given already exist."
+  fail:
+   msg: "Interface name {{ item.name }} doesn't exist"
+  when: item.name not in interface_list
+  with_items: "{{ config }}"
+
+- name: "SwitchPortConfiguration: Validating the vlan id list when type is access"
+  fail:
+    msg: "Vlan id {{ vlan }} doesn't exist"
+  when: config.access is defined and config.access.vlan not in vlan_id_list
+  with_items: "{{ config }}"
+
+- name: "SwitchPortConfiguration: Pushing the configuration"
+  ios_l2_interfaces:
+    config: "{{ config }}"
+    state: "{{ state }}"
+  register: result
+
+
