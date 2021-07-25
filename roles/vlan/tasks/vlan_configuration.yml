@@ -18,7 +18,7 @@
     updated_config_list: []
 - name: "VLANConfiguration: Updating the config object with other parameters"
   set_fact:
-    updated_config_list: "{{ updated_config_list }} + [ {'name': '{{ item.name }}','vlan_id': '{{ item.vlan_id }}', 'remote_span':{{ remote_span }},'shutdown': {{ shutdown }},'state': {{ state }} } ]"
+    updated_config_list: "{{ updated_config_list }} + [ {'name': '{{ item.name }}','vlan_id': '{{ item.vlan_id }}', 'remote_span': '{{ remote_span }}','shutdown': '{{ shutdown }}','state': '{{ state }}' } ]"
   with_items: "{{ config }}"
 
 - name: "VLANConfiguration: Dumping the updated configuration"
