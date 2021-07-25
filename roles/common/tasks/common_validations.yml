@@ -2,10 +2,31 @@
 
 - name: "CommonValidations: Ensuring type variable is defined"
   fail:
-    msg: "Either the operation  type is undefined or it is empty"
-  when: operation_type is not defined or operation_type==""
+    msg: "Either the configuration  type is undefined or it is empty"
+  when: config_type is not defined or config_type|trim ==""
 
 - name: "CommonValidations: Ensure valid type values are provided"
   fail:
-    msg: "Invalid operation type {{ operation_type }} provided. Valid operation types are {{ supported_types }}"
-  when: operation_type|upper not in supported_types
+    msg: "Invalid configuration type {{ operation_type }} provided. Valid operation types are {{ supported_config_types }}"
+  when: config_type|upper not in supported_config_types
+
+
+- name: "CommonValidations: Ensuring operation_type variable is defined"
+  fail:
+    msg: "Either the operation  type is undefined or it is empty"
+  when: operation_type is not defined or operation_type|trim == ""
+
+- name: "CommonValidations: Ensure valid type values are provided"
+  fail:
+    msg: "Invalid operation type {{ operation_type }} provided. Valid operation types are {{ supported_operation_types }}"
+  when: operation_type|trim|upper not in supported_operation_types
+
+- name: "SwitchPortValidation: Update operation  not yet supported"
+  fail:
+    msg: "Update operation not yet supported for switch port configuration"
+  when: operation_type|upper=="UPDATE" and config_type|upper=="SWITCH_PORT_CONFIGURATION"
+
+- name: "VLANValidation: Update operation  not yet supported"
+  fail:
+    msg: "Update operation not yet supported for vlan configuration"
+  when: operation_type|upper=="UPDATE" and config_type|upper=="VLAN_CONFIGURATION"

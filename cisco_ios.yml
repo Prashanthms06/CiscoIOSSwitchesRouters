@@ -5,7 +5,7 @@
       - role: common
 
       - role: switch_port_config
-        when: operation_type|upper=="SWITCH_PORT_CONFIGURATION"
+        when: config_type|upper=="SWITCH_PORT_CONFIGURATION"
 
       - role: vlan
-        when: operation_type|upper=="VLAN_CONFIGURATION"
+        when: config_type|upper=="VLAN_CONFIGURATION"

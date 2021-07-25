@@ -1,4 +1,7 @@
 ---
+- name: "SwitchPortConfigurationPrelim: Prelim operation"
+  debug:
+    msg: "Executing prelim operations for switch port configuration"
 
 - name: "SwitchPortConfigurationPrelim: Validating if switch port config is provided or not"
   fail:
@@ -10,26 +13,26 @@
     task_name: "SwitchPortConfigurationPrelim"
     resources: ["interfaces","vlans"]
 
-- name: "Dumping the results"
+- name: "SwitchPortConfigurationPrelim: Dumping the results"
   debug:
    var: result
 
-- name: "Building interface list"
+- name: "SwitchPortConfigurationPrelim: Building interface list"
   set_fact:
    interface_list: "{{ interface_list }} + [ '{{ item.name }}' ]"
   with_items: "{{ result.ansible_facts.ansible_network_resources.interfaces }}"
 
-- name: "Dumping the interface list"
+- name: "SwitchPortConfigurationPrelim: Dumping the interface list"
   debug:
    msg: "{{ interface_list }}"
 
-- name: "Building vlan id list"
+- name: "SwitchPortConfigurationPrelim: Building vlan id list"
   set_fact:
     #convert the vlan_id to integer while putting into the list
    vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id|int }}' ]"
   with_items: "{{ result.ansible_facts.ansible_network_resources.vlans }}"
 
-- name: "Dumping the interface list"
+- name: "SwitchPortConfigurationPrelim: Dumping the interface list"
   debug:
    msg: "{{ vlan_id_list }}"
 

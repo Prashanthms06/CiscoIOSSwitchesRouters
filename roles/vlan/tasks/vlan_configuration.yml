@@ -18,7 +18,7 @@
     updated_config_list: []
 - name: "VLANConfiguration: Updating the config object with other parameters"
   set_fact:
-    updated_config_list: "{{ updated_config_list }} + [ {'name': '{{ item.name }}','vlan_id': '{{ item.vlan_id }}', 'remote_span':'no','shutdown':'disabled','state':'active' } ]"
+    updated_config_list: "{{ updated_config_list }} + [ {'name': '{{ item.name }}','vlan_id': '{{ item.vlan_id }}', 'remote_span':{{ remote_span }},'shutdown': {{ shutdown }},'state': {{ state }} } ]"
   with_items: "{{ config }}"
 
 - name: "VLANConfiguration: Dumping the updated configuration"
@@ -34,3 +34,7 @@
 - name: "VLANConfiguration: Dumping the result"
   debug:
     var: result
+
+- name: "VLANConfiguration: Adding SVI to vlans"
+  include_tasks: vlan_svi_configuration.yml
+  loop: "{{ config }}"

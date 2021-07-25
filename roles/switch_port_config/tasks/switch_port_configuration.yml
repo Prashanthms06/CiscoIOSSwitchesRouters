@@ -1,4 +1,8 @@
 ---
+- name: "SwitchPortConfiguration: Creation operation"
+  debug:
+    msg: "Executing create operation for switch port configuration"
+
 - name: "SwitchPortConfiguration: Ensuring config data conforms to the schema"
   ansible.utils.validate:
    data: "{{ config }}"
