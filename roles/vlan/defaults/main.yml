@@ -1,0 +1,5 @@
+---
+vlan_id_list: []
+remote_span: no
+shutdown: disabled
+state: active
