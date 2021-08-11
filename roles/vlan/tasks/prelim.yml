@@ -17,6 +17,7 @@
     #convert the vlan_id to integer while putting into the list
    vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id|int }}' ]"
   with_items: "{{ result.ansible_facts.ansible_network_resources.vlans }}"
+  no_log: True
 
 - name: "VlanPrelimConfiguaration: Dumping the interface list"
   debug:

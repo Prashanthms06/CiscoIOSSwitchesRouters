@@ -21,6 +21,7 @@
   set_fact:
    interface_list: "{{ interface_list }} + [ '{{ item.name }}' ]"
   with_items: "{{ result.ansible_facts.ansible_network_resources.interfaces }}"
+  no_log: True
 
 - name: "SwitchPortConfigurationPrelim: Dumping the interface list"
   debug:
@@ -31,6 +32,7 @@
     #convert the vlan_id to integer while putting into the list
    vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id|int }}' ]"
   with_items: "{{ result.ansible_facts.ansible_network_resources.vlans }}"
+  no_log: True
 
 - name: "SwitchPortConfigurationPrelim: Dumping the interface list"
   debug:

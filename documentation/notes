@@ -1,0 +1,107 @@
+######################################################
+Meeting Notes on Aug 10, 2021 with Anthony Salangad
+######################################################
+name ops_pc
+!
+interface Vlan4
+ description SVI ops_pc
+ vrf forwarding vrf-opscc
+ ip address 10.152.120.222 255.255.255.224
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ipv6 address 2001:df3:bf80:4285:10:152:120:222/64
+ ipv6 enable
+ ipv6 nd prefix 2001:df3:bf80:4285::/64 2592000 604800 no-autoconfig
+ ipv6 nd managed-config-flag
+ ipv6 nd other-config-flag
+ ipv6 nd router-preference High
+ no ipv6 redirects
+ ospfv3 1 ipv4 area 1
+ ospfv3 1 ipv6 area 1
+ no shut
+
+Anthony to Everyone (11:36 AM)
+vlan 4
+ name {{ ops_pc }}
+!
+interface Vlan4
+ description SVI {{ ops_pc }}
+ vrf forwarding {{ vrf-opscc }} ==> name of the vrf
+ ip address {{ 10.152.120.222 }} {{ 255.255.255.224 }}
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ipv6 address {{ 2001:df3:bf80:4285:10:152:120:222/64 }}
+ ipv6 enable
+ ipv6 nd prefix {{ 2001:df3:bf80:4285::/64 }} 2592000 604800 no-autoconfig ---> nd prefix will be same as ipv6 til 4th octet
+
+ ipv6 nd managed-config-flag
+ ipv6 nd other-config-flag
+ ipv6 nd router-preference High
+ no ipv6 redirects
+ ospfv3 1 ipv4 area 1
+ ospfv3 1 ipv6 area 1
+ no shut
+
+
+
+user when he is going to creating vlan, then the following
+1. vlan id
+2. vrf name
+3. ipv4 address and netmask
+4. ipv6 address with netmask
+
+
+Layer 2 Switch port Access Configuration
+interface range GigabitEthernet 1/5-10
+<<description>>
+ switchport access vlan 999
+ switchport mode access
+ device-tracking attach-policy device-tracking-policy
+ no cdp enable
+ authentication timer reauthenticate server
+ access-session control-direction in
+ access-session port-control auto
+ mab
+access-session host-mode multi-auth
+dot1x timeout tx-period 30
+ dot1x pae authenticator
+ dot1x max-reauth-req 3
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ service-policy type control subscriber PSA_DOT1X_POLICY
+no shutdown
+
+Switch port  trunk mode configuration
+interface GigabitEthernet1/1
+ description <UL_to_Yard-Distribution-Sw>
+ switchport trunk allowed vlan <vlan-range>
+ switchport mode trunk
+ cts manual
+ policy static sgt 500 trusted
+
+
+ PORT Channel configuration (Switch port configuration)- Trunk mode only
+ interface GigabitEthernet1/3
+ description <ISL_to_Peer-Reefer-Sw>
+ switchport trunk allowed vlan <vlan-range>
+ switchport mode trunk
+ cts manual
+  policy static sgt 500 trusted
+channel-group 1 mode active
+!
+interface GigabitEthernet1/4
+ description <ISL_to_Peer-Reefer-Sw>
+ switchport trunk allowed vlan <vlan-range>
+ switchport mode trunk
+ cts manual
+  policy static sgt 500 trusted
+channel-group 1 mode active
+!
+interface Port-channel1
+ description <ISL_to_Peer-Reefer-Sw>
+ switchport trunk allowed vlan <vlan-range>
+ switchport mode trunk
+
+ ######################################################Meeting notes Aug 10,2021 End######################################################

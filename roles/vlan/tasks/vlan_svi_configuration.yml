@@ -1,19 +1,65 @@
 ---
-- name: "VLANConfiguration: Adding SVI to vlans"
+#interface Vlan4
+ #description SVI ops_pc
+ #vrf forwarding vrf-opscc
+ #ip address 10.152.120.222 255.255.255.224
+ #no ip redirects
+ #no ip unreachables
+ #no ip proxy-arp
+ #ipv6 address 2001:df3:bf80:4285:10:152:120:222/64
+ #ipv6 enable
+ #ipv6 nd prefix 2001:df3:bf80:4285::/64 2592000 604800 no-autoconfig
+ #ipv6 nd managed-config-flag
+ #ipv6 nd other-config-flag
+ #ipv6 nd router-preference High
+ #no ipv6 redirects
+ #ospfv3 1 ipv4 area 1
+ #ospfv3 1 ipv6 area 1
+ #no shut
+- name: "VLANConfiguration: Adding SVI ipv4  to vlans"
   block:
-   - name: "VlanSVIConfiguration: Validating the ip addres"
-     fail:
-      msg: "ip address cannot be empty"
-     when: item.ipv4addr|trim==""
+    #ip_util module will validate the ipaddress and fetch useful information like network, netmask, hostmask etc
+   - ip_util:
+       ip_address: "{{ item.ipv4addr }}"
+       type: "ipv4"
 
    - name: "VlanSVIConfiguration: Validating the ip mask"
      fail:
       msg: "Either ip mask is not defined or empty"
      when: item.ip_mask is not defined or item.ip_mask|trim==""
 
-   - name: "VlanSVIConfiguration : Setting the SVI to vlan id {{ item.name }} "
+   - name: "VlanSVIConfiguration : Setting the SVI ipv4 to vlan id {{ item.name }} "
      ios_config:
       lines:
         - "ip address {{ item.ipv4addr }} {{ item.ip_mask }}"
+        - "no ip redirects"
+        - "no ip unreachables"
+        - "no ip proxy-arp"
+        - "ospfv3 1 ipv4 area 1"
+        - "no shut"
       parents: "interface vlan {{ item.vlan_id }} "
   when: item.ipv4addr is defined
+
+- name: "VLANConfiguration: Adding SVI ipv6  vlans"
+  block:
+    #ip_util module will validate the ipaddress and fetch useful information like network, netmask, hostmask etc
+   - ip_util:
+      ip_address: "{{ item.ipv6addr }}"
+      type: "ipv6"
+     register: ip_details
+
+
+   - name: "VlanSVIConfiguration : Setting the SVI ipv6 to vlan id {{ item.name }} "
+     ios_config:
+      lines:
+        - "ipv6 address  {{ item.ipv4addr }} "
+        - "ipv6 enable"
+        - "ipv6 nd prefix {{ ip_details.network }} 2592000 604800 no-autoconfig"
+        - "ipv6 nd managed-config-flag"
+        - " ipv6 nd other-config-flag"
+        - "ipv6 nd router-preference High"
+        - "no ipv6 redirects"
+        - "ospfv3 1 ipv6 area 1"
+        - "no shut"
+      parents: "interface vlan {{ item.vlan_id }} "
+  when: item.ipv6addr is defined
