@@ -6,24 +6,17 @@
 
   tasks:
 
+    - set_fact:
+        obj1: "{{ fmc_object_types }}"
+
     - fail:
        msg: "{{ object_type }} is not supported"
-      when: " fmc_object_types.{{ object_type }} is not defined"
+      when: obj1[object_type] is not defined
 
     - fail:
        msg: "operation {{ operation }} not in supported operation for object_type {{ object_type }}.
        Supported operations are fmc_object_types.{{ object_type }}.supported_operations "
-      when: "operation|upper not in fmc_object_types.{{ object_type }}.supported_operations"
-
-
-    - set_fact:
-       url_d: "https://10.10.20.40/api/fmc_config/v1/domain/policy/fmc_object_types.{{ object_type }}.{{ obj_type }} "
-
-    - debug:
-       var: url_d
-
-    - fail:
-       msg: "dfdf"
+      when: operation|upper not in obj1[object_type]['supported_operations']
 
     - name: "FMCCommon: Generating token"
       uri:
@@ -34,8 +27,6 @@
         status_code: 204
         method: POST
         validate_certs: no
-
-
       register: result
 
     - debug:
@@ -53,7 +44,7 @@
 
     - name: "FMCommon: Creating access policy"
       uri:
-       url: "https://10.10.20.40/api/fmc_config/v1/domain/{{ result.domain_uuid }}/policy/fmc_object_types.{{ object_type }}.obj_type"
+       url: "https://10.10.20.40/api/fmc_config/v1/domain/{{ result.domain_uuid }}/policy/{{ obj1[object_type]['obj_type'] }}"
        method: POST
        body_format: json
        body: "{{ req_body }}"
