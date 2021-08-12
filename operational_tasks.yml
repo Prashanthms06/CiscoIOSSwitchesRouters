@@ -1,0 +1,10 @@
+---
+ - name: "Configuring switch port"
+   include_role:
+    name: switch_port_config
+   when: config_type|upper=="SWITCH_PORT_CONFIGURATION"
+
+ - name: "Configuring Vlan"
+   include_role:
+    name: vlan
+   when: config_type|upper=="VLAN_CONFIGURATION"

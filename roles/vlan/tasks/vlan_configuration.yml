@@ -35,6 +35,7 @@
   debug:
     var: result
 
+
 - name: "VLANConfiguration: Adding SVI to vlans"
   include_tasks: vlan_svi_configuration.yml
   loop: "{{ config }}"

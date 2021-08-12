@@ -1,6 +1,6 @@
 ---
-- include: prelim.yml
+- include_tasks: prelim.yml
   when: config_type|upper=="VLAN_CONFIGURATION"
 
-- include: vlan_configuration.yml
-  when: operation_type|upper=="CREATE"
+- include_tasks: vlan_configuration.yml
+  when: operation|upper=="CREATE"

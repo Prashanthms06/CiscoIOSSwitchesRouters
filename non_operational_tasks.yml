@@ -1,0 +1,6 @@
+---
+
+ - name: "Performing Audit"
+   include_role:
+    name: audit
+   when: config_type|upper=="AUDIT"

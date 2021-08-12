@@ -1,4 +1,28 @@
 ---
+
+- name: "VLANConfiguration: Creating the description with job id {{ tower_job_id }}"
+  block:
+    - set_fact:
+        ansible_tower_job_id: "{{ TOWER_PREFIX }}_{{ tower_job_id }}"
+
+    - name: "Updating the description"
+      set_fact:
+        updated_desc: "{{ item.description }}::{{ ansible_tower_job_id }}"
+  when: tower_job_id is defined
+
+#For some reasons not able to add the description using ios_vlans module. Hence adding via ios_config
+# we shall be updating the description only when the description is not empty. If empty, then it throws
+#exception of type "incomplete command"
+- set_fact:
+    default_description: "{{ item.description | default(description) }}"
+
+- name: "VLANConfiguration: Adding description to vlan {{ item.vlan_id }}"
+  ios_config:
+   lines:
+      - "description {{ updated_desc | default(default_description) }}"
+   parents: "interface vlan {{ item.vlan_id }} "
+  when: updated_desc is defined or default_description|trim != ""
+
 #interface Vlan4
  #description SVI ops_pc
  #vrf forwarding vrf-opscc
@@ -28,7 +52,7 @@
       msg: "Either ip mask is not defined or empty"
      when: item.ip_mask is not defined or item.ip_mask|trim==""
 
-   - name: "VlanSVIConfiguration : Setting the SVI ipv4 to vlan id {{ item.name }} "
+   - name: "VlanSVIConfiguration : Setting the SVI ipv4 {{ item.ipv4addr }} to vlan id {{ item.name }} "
      ios_config:
       lines:
         - "ip address {{ item.ipv4addr }} {{ item.ip_mask }}"
@@ -49,10 +73,10 @@
      register: ip_details
 
 
-   - name: "VlanSVIConfiguration : Setting the SVI ipv6 to vlan id {{ item.name }} "
+   - name: "VlanSVIConfiguration : Setting the SVI ipv6  {{ item.ipv6addr }}to vlan id {{ item.name }} "
      ios_config:
       lines:
-        - "ipv6 address  {{ item.ipv4addr }} "
+        - "ipv6 address  {{ item.ipv6addr }} "
         - "ipv6 enable"
         - "ipv6 nd prefix {{ ip_details.network }} 2592000 604800 no-autoconfig"
         - "ipv6 nd managed-config-flag"

@@ -21,6 +21,10 @@
           "type": "string",
           "description": "Full name of interface, i.e. Ethernet1/1."
         },
+        "description": {
+          "type": "string",
+          "description": "Description"
+        },
         "access": {
           "type": "object",
           "description": "Switchport mode access command to configure the interface as a Layer-2 access.",
@@ -30,20 +34,17 @@
               "type": "integer",
               "description": "Configure given VLAN in access port. It's used as the access VLAN ID."
             }
+
           }
         },
         "trunk" : {
           "type": "object",
           "description": "Switchport mode trunk command to configure the interface as a Layer-2 trunk.",
-          "required": ["allowed_vlans","native_vlan"],
+          "required": ["vlan_range"],
           "properties": {
-            "allowed_vlans" : {
+            "vlan_range" : {
               "type": "string",
               "description": "List of allowed VLANs in a given trunk port. These are the only VLANs that will be configured on the trunk."
-            },
-            "native_vlan": {
-              "type": "integer",
-              "description": "Native VLAN to be configured in trunk port. It is used as the trunk native VLAN ID."
             }
           }
         }

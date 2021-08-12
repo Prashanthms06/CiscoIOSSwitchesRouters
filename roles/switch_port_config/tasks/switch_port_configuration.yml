@@ -21,14 +21,18 @@
   when: item.access is defined and item.access['vlan']|string not in vlan_id_list
   with_items: "{{ config }}"
 
-- name: "SwitchPortConfiguration: Pushing the configuration"
-  ios_l2_interfaces:
-    config: "{{ config }}"
-    state: "merged"
-  register: result
+#- name: "SwitchPortConfiguration: Pushing the configuration"
+ # ios_l2_interfaces:
+  #  config: "{{ config }}"
+   # state: "merged"
+  #register: result
 
-- name: "SwitchPortConfiguration: Dumping the configuration result"
-  debug:
-   var: result
+#- name: "SwitchPortConfiguration: Dumping the configuration result"
+ # debug:
+  # var: result
+
+- name: "SwitchPortConfiguration: Adding common properties to all configuration"
+  include_tasks: configure_switch_port.yml
+  loop: "{{ config }}"
 
 

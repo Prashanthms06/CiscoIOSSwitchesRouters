@@ -4,8 +4,11 @@
     roles:
       - role: common
 
-      - role: switch_port_config
-        when: config_type|upper=="SWITCH_PORT_CONFIGURATION"
+    tasks:
+      - include_tasks: operational_tasks.yml
+        when: operation|upper in crud_operations
 
-      - role: vlan
-        when: config_type|upper=="VLAN_CONFIGURATION"
+      - include_tasks: non_operational_tasks.yml
+        when: operation|upper in non_crud_operations
+
+

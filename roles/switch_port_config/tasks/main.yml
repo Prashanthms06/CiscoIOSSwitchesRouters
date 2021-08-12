@@ -1,6 +1,6 @@
 ---
-- include: prelim.yml
+- include_tasks: prelim.yml
   when: config_type|upper=="SWITCH_PORT_CONFIGURATION"
 
-- include: switch_port_configuration.yml
-  when: operation_type|upper=="CREATE"
+- include_tasks: switch_port_configuration.yml
+  when: operation|upper=="CREATE"

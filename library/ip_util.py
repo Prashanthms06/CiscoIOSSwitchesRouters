@@ -25,10 +25,10 @@ def main():
     )
     try:
         if ip_type == 'ipv4':
-            interface = IPv4Interface(ip_val)
+            interface = IPv4Interface(unicode(ip_val))
         elif ip_type == 'ipv6':
             #interface = ipaddress.ip_address(ip_val)
-            interface = IPv6Interface(ip_val)
+            interface = IPv6Interface(unicode(ip_val))
         else:
             module.fail_json(msg="Invalid ip type {} provide. Supported values are ipv4 and ipv6 only:\n{}".format(ip_type,traceback.format_exc()))
             return

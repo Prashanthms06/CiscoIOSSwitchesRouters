@@ -1,1 +1,1 @@
-- include: common_validations.yml
+- include_tasks: common_validations.yml

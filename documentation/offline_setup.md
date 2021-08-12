@@ -8,6 +8,7 @@ The following softwares are present under downloads folder:
 |setuptools|57.0.0|
 |pip|21.1.2|
 |jsonschema|3.2.0|
+|paramiko||
 
 
 Install the software as per below given order:

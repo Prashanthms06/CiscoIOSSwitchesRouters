@@ -58,20 +58,20 @@ interface range GigabitEthernet 1/5-10
 <<description>>
  switchport access vlan 999
  switchport mode access
- device-tracking attach-policy device-tracking-policy
- no cdp enable
- authentication timer reauthenticate server
- access-session control-direction in
- access-session port-control auto
- mab
-access-session host-mode multi-auth
-dot1x timeout tx-period 30
- dot1x pae authenticator
- dot1x max-reauth-req 3
- spanning-tree portfast
- spanning-tree bpduguard enable
- service-policy type control subscriber PSA_DOT1X_POLICY
-no shutdown
+     device-tracking attach-policy device-tracking-policy
+     no cdp enable
+     authentication timer reauthenticate server
+     access-session control-direction in
+     access-session port-control auto
+     mab
+     access-session host-mode multi-auth
+     dot1x timeout tx-period 30
+     dot1x pae authenticator
+     dot1x max-reauth-req 3
+     spanning-tree portfast
+     spanning-tree bpduguard enable
+     service-policy type control subscriber PSA_DOT1X_POLICY
+    no shutdown
 
 Switch port  trunk mode configuration
 interface GigabitEthernet1/1

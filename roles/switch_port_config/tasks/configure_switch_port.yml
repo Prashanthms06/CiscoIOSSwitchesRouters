@@ -1,0 +1,75 @@
+---
+
+- name: "SwitchPortConfiguration: Creating the description with job id {{ tower_job_id }}"
+  block:
+    - set_fact:
+        ansible_tower_job_id: "{{ TOWER_PREFIX }}_{{ tower_job_id }}"
+
+    - name: "Updating the description"
+      set_fact:
+        updated_desc: "{{ item.description }}::{{ ansible_tower_job_id }}"
+  when: tower_job_id is defined
+
+#For some reasons not able to add the description using ios_vlans module. Hence adding via ios_config
+# we shall be updating the description only when the description is not empty. If empty, then it throws
+#exception of type "incomplete command"
+- set_fact:
+    default_description: "{{ item.description | default(description) }}"
+
+- name: "SwitchPortConfiguration: Adding description to port {{ item.name }}"
+  ios_config:
+   lines:
+      - "description {{ updated_desc | default(default_description) }}"
+   parents: "interface  {{ item.name }} "
+  when: updated_desc is defined or default_description|trim != ""
+
+- name: "SwitchPortConfiguration in access mode"
+  block:
+     - name: "SwitchPortConfiguration: Configuring port {{ item.name }} in access mode"
+       ios_config:
+        lines:
+          - "switchport access vlan {{ item.access.vlan }}"
+          - "switchport mode access"
+          - "device-tracking attach-policy device-tracking-policy"
+          - "no cdp enable"
+          - "authentication timer reauthenticate server"
+          - "access-session control-direction in"
+          - "access-session port-control auto"
+          - "mab"
+          - "access-session host-mode multi-auth"
+          - "dot1x timeout tx-period 30"
+          - "dot1x pae authenticator"
+          - "dot1x max-reauth-req 3"
+          - "spanning-tree portfast"
+          - "spanning-tree bpduguard enable"
+     # The following line has to be uncommented when running in the PSA environment
+          #- "service-policy type control subscriber PSA_DOT1X_POLICY"
+          - "no shutdown"
+        parents: "interface  {{ item.name }} "
+      # we are putting this configuration after the above configuration, becaue this configuration
+     # ask for user input. When we do like this it doesn't ask user prompt.
+     - name: "SwitchPortConfiguration: Adding session for port {{ item.name }} in access mode"
+       ios_config:
+        lines:
+          - "access-session control-direction in"
+        parents: "interface  {{ item.name }} "
+  when: item.access is defined
+
+
+- name: "SwitchPortConfiguration in trunk mode"
+  block:
+     - validate_vlan:
+        vlan_range: "{{ item.trunk.vlan_range }}"
+
+     - name: "SwitchPortConfiguration: Configuring port {{ item.name }} in trunk mode"
+       ios_config:
+        lines:
+          - "switchport trunk allowed vlan {{ item.trunk.vlan_range }}"
+          - "switchport mode trunk"
+          - "cts manual"
+          - "policy static sgt 500 trusted"
+     # The following line has to be uncommented when running in the PSA environment
+          #- "service-policy type control subscriber PSA_DOT1X_POLICY"
+          - "no shutdown"
+        parents: "interface  {{ item.name }} "
+  when: item.trunk is defined
