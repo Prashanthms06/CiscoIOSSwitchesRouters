@@ -14,11 +14,12 @@ TOWER_PREFIX: TID
 # not all the policies suppprt all the operations
 fmc_object_types: {
      "AccessPolicies": {
-              "obj_type":"accesspolicies",
-              "supported_operations":["POST","GET","DELETE"]
+              "obj_type": "accesspolicies",
+              "supported_operations": ["POST","GET","DELETE"]
      },
      "AnyProtocolPortObjects" :{
                 "obj_type":"anyprotocolportobjects",
                 "supported_operations": ["GET"]
      }
 }
+obj_type: 'obj_type'
