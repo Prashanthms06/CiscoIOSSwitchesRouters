@@ -1,0 +1,57 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+
+  tasks:
+    - validate_fmc_objects:
+       fmc_mapping: fmc_object_types
+       object_type: object_type
+       operation: operation
+
+    - name: "FMCCommon: Generating token"
+      uri:
+        url: "https://10.10.20.40/api/fmc_platform/v1/auth/generatetoken"
+        user: user
+        password: user
+        force_basic_auth: yes
+        status_code: 204
+        method: POST
+        validate_certs: no
+
+
+      register: result
+
+    - debug:
+        var: result.x_auth_access_token
+
+    - set_fact:
+       req_body: '{
+                                  "type": "AccessPolicy",
+                                                         "name": "AccessPolicy154",
+                                                         "defaultAction": {
+                                                           "action": "BLOCK"
+                                                         }
+                        }'
+
+    - name: "FMCommon: Creating access policy"
+      uri:
+       url: "https://10.10.20.40/api/fmc_config/v1/domain/{{ result.domain_uuid }}/policy/{{ fmc_object_types.object_type.object_type }}"
+       method: POST
+       body_format: json
+       body: "{{ req_body }}"
+       validate_certs: no
+       status_code: 201
+       headers:
+         Content-Type: "application/json"
+         X-auth-access-token: "{{ result.x_auth_access_token }}"
+         X-auth-refresh-token: "{{ result.x_auth_refresh_token }}"
+      register: result
+
+    - debug:
+       var: result
+
+
+
+

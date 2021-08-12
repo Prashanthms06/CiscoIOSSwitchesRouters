@@ -7,3 +7,18 @@ non_crud_operations: ["AUDIT"]
 supported_operation_types: "{{ crud_operations + non_crud_operations }}"
 description:
 TOWER_PREFIX: TID
+
+###################################
+#Mapping of Object types to url object types
+#User will see modified form of object types, but the uri requires in smallercase
+# not all the policies suppprt all the operations
+fmc_object_types: {
+     "AccessPolicies": {
+              "obj_type":"accesspolicies",
+              "supported_operations":["POST","GET","DELETE"]
+     },
+     "AnyProtocolPortObjects" :{
+                "obj_type":"anyprotocolportobjects",
+                "supported_operations": ["GET"]
+     }
+}
