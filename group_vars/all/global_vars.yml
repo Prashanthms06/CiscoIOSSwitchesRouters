@@ -13,12 +13,196 @@ TOWER_PREFIX: TID
 #User will see modified form of object types, but the uri requires in smallercase
 # not all the policies suppprt all the operations
 fmc_object_types: {
-     "AccessPolicies": {
-              "obj_type": "accesspolicies",
+     "DnsServerGroups": {
+              "obj_type": "dnsservergroups",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "Fqdns": {
+              "obj_type": "fqdns",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "Hosts": {
+              "obj_type": "hosts",
+              "supported_operations": ["POST","GET","DELETE"]
+     },		 
+     "IcmpV4Objects": {
+              "obj_type": "icmpv4objects",
+              "supported_operations": ["POST","GET","DELETE"]
+     },		 
+     "IcmpV6Objects": {
+              "obj_type": "icmpv6objects",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	
+     "IkeV1IpSecProposals": {
+              "obj_type": "ikev1ipsecproposals",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "IkeV1Policies": {
+              "obj_type": "ikev1policies",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 	 
+     "IkeV2IpSecProposals": {
+              "obj_type": "ikev2ipsecproposals",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "IkeV2Policies": {
+              "obj_type": "ikev2policies",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 	 
+     "InterfaceGroups": {
+              "obj_type": "interfacegroups",
+              "supported_operations": ["POST","GET","DELETE"]
+     },		 
+     "NetworkGroups": {
+              "obj_type": "networkgroups",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "Networks": {
+              "obj_type": "networks",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 	 
+     "PortObjectGroups": {
+              "obj_type": "portobjectgroups",
               "supported_operations": ["POST","GET","DELETE"]
      },
+     "ProtocolPortObjects": {
+              "obj_type": "protocolportobjects",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "Ranges": {
+              "obj_type": "ranges",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 	 
+     "SecurityZones": {
+              "obj_type": "securityzones",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 	 
+     "SlaMonitors": {
+              "obj_type": "slamonitors",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	 
+     "UrlGroups": {
+              "obj_type": "urlgroups",
+              "supported_operations": ["POST","GET","DELETE"]
+     },		 
+     "Urls": {
+              "obj_type": "urls",
+              "supported_operations": ["POST","GET","DELETE"]
+     },	
+     "VlanGroupTags": {
+              "obj_type": "vlangrouptags",
+              "supported_operations": ["POST","GET","DELETE"]
+     },		 
+     "VlanTags": {
+              "obj_type": "vlantags",
+              "supported_operations": ["POST","GET","DELETE"]
+     },		 
      "AnyProtocolPortObjects" :{
                 "obj_type":"anyprotocolportobjects",
+                "supported_operations": ["GET"]
+     },
+     "ApplicationCategories" :{
+                "obj_type":"applicationcategories",
+                "supported_operations": ["GET"]				
+     },
+     "ApplicationFilters" :{
+                "obj_type":"applicationfilters",
+                "supported_operations": ["GET"]	
+     },
+     "ApplicationProductivities" :{
+                "obj_type":"applicationproductivities",
+                "supported_operations": ["GET"]	
+     },
+     "ApplicationRisks" :{
+                "obj_type":"applicationrisks",
+                "supported_operations": ["GET"]	
+     },
+     "Applications" :{
+                "obj_type":"applications",
+                "supported_operations": ["GET"]	 
+     },
+     "ApplicationTags" :{
+                "obj_type":"applicationtags",
+                "supported_operations": ["GET"]	 
+     },
+     "ApplicationTypes" :{
+                "obj_type":"applicationtypes",
+                "supported_operations": ["GET"]	 
+     },
+     "CertEnrollments" :{
+                "obj_type":"certenrollments",
+                "supported_operations": ["GET"]
+     },
+     "Continents" :{
+                "obj_type":"continents",
+                "supported_operations": ["GET"]
+     },
+     "Countries" :{
+                "obj_type":"countries",
+                "supported_operations": ["GET"]
+     },
+     "EndpointDeviceTypes" :{
+                "obj_type":"endpointdevicetypes",
+                "supported_operations": ["GET"]
+     },
+     "ExtendedAccesslist" :{
+                "obj_type":"extendedaccesslist",
+                "supported_operations": ["GET"]
+     },
+     "Geolocations" :{
+                "obj_type":"geolocations",
+                "supported_operations": ["GET"]
+     },
+     "InterfaceObjects" :{
+                "obj_type":"interfaceobjects",
+                "supported_operations": ["GET"]
+     },
+     "IseSecurityGroupTags" :{
+                "obj_type":"isesecuritygrouptags",
+                "supported_operations": ["GET"]				
+     },
+     "NetworkAddresses" :{
+                "obj_type":"networkaddresses",
+                "supported_operations": ["GET"]	
+     },
+     "Ports" :{
+                "obj_type":"ports",
+                "supported_operations": ["GET"]	
+     },
+     "VariableSets" :{
+                "obj_type":"variablesets",
+                "supported_operations": ["GET"]	
+     },
+     "TunnelTags" :{
+                "obj_type":"tunneltags",
+                "supported_operations": ["GET"]	
+     },
+     "UrlCategories" :{
+                "obj_type":"urlcategories",
+                "supported_operations": ["GET"]	
+     },
+     "SiUrlFeeds" :{
+                "obj_type":"siurlfeeds",
+                "supported_operations": ["GET"]	
+     },
+     "SiUrlLists" :{
+                "obj_type":"siurllists",
+                "supported_operations": ["GET"]	
+     },
+     "Realms" :{
+                "obj_type":"realms",
+                "supported_operations": ["GET"]	
+     },
+     "RealMuserGroups" :{
+                "obj_type":"realmusergroups",
+                "supported_operations": ["GET"]	
+     },
+     "RealMusers" :{
+                "obj_type":"realmusers",
+                "supported_operations": ["GET"]	
+     },
+     "SecurityGroupTags" :{
+                "obj_type":"securitygrouptags",
                 "supported_operations": ["GET"]
      }
 }
