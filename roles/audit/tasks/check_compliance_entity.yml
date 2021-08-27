@@ -1,0 +1,18 @@
+---
+- name: "CheckCompliance: Check the {{ item.entity_name }} compliance"
+  ios_command:
+     commands: "show run | {{ item.grep_cmd }}"
+  register: actual_result
+
+- debug:
+    var: actual_result
+
+# THis result will have new line, you need to create the list of results and then iterate through
+
+- set_fact:
+    actual_aaa_list: "{{ }}}"
+
+- fail :
+    msg: "{{ item }} is expected in {{ item.entity_name }} but not in actual result"
+  when: {{ item }} not in actual_result
+  loop: expected_result

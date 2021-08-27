@@ -8,3 +8,7 @@
 
 - debug:
     var: diff_result.diff.after
+
+
+- include_tasks: check_compliance_entity.yml
+  loop: entity_list

@@ -1,1 +1,39 @@
 ---
+
+
+
+aaa_expected_compliance_list: [
+"aaa new-model",
+"aaa group server tacacs+ PSA_TACACS",
+"aaa authentication login default group PSA_TACACS local",
+"aaa authentication login CONSOLE none",
+"aaa authentication enable default group PSA_TACACS enable",
+"aaa authorization config-commands",
+"aaa authorization exec default group PSA_TACACS none",
+"aaa authorization commands 0 default group PSA_TACACS none",
+"aaa authorization commands 1 default group PSA_TACACS none",
+"aaa authorization commands 15 default group PSA_TACACS none",
+"aaa accounting exec default start-stop group PSA_TACACS",
+"aaa accounting commands 15 default start-stop group PSA_TACACS",
+"aaa accounting system default start-stop group PSA_TACACS"
+]
+
+tacacs_expected_compliance_list: []
+
+entity_list: [
+  {
+    "entity_name":"AAA",
+    "grep_cmd": "in aaa"
+    "expected_result": aaa_expected_compliance_list
+  }.
+  {
+    "entity_name": "TACACS",
+    "grep_cmd": "set tacacs"
+    "expected_result": tacacs_expected_compliance_list
+  },
+  {
+
+  }
+]
+
+
