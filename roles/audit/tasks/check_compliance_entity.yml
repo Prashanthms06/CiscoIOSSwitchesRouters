@@ -4,17 +4,23 @@
      commands: "show run | {{ item.grep_cmd }}"
   register: actual_result
 
+
 # THis result will have new line, you need to create the list of results and then iterate through
 - set_fact:
    test: "{{ actual_result.stdout_lines }}"
 
+- debug:
+    var: test
 - set_fact:
     ven: "{{ item.expected_result }}"
 
 - debug:
     var: ven
 
-- fail :
-    msg: " is expected in  but not in actual result"
+- set_fact :
+    error_list: "{{ error_list }} + [  '{{ item }}' ]"
   when:  item not in "{{ test }}"
   with_items: "{{ ven }}"
+
+- debug:
+    var: error_list

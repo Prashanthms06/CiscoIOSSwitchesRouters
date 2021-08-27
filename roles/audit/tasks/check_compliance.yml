@@ -9,6 +9,17 @@
 - debug:
     var: diff_result.diff.after
 
+- name: "initializing the list"
+  set_fact:
+    error_list: []
+    chacheable: yes
 
 - include_tasks: check_compliance_entity.yml
-  loop: entity_list
+  loop: "{{ entity_list }}"
+
+- fail:
+    msg: "the given list entities are not present in the actual output.\n {{ error_list }}"
+  when: error_list|length>0
+
+- debug:
+    msg: "Compliance check successfull"
