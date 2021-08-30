@@ -1,14 +1,11 @@
 ---
-- name: "CheckCompliance: Check the compliance"
-  ios_config:
-    diff_against: intended
-    intended_config: "{{ lookup('file', 'master.cfg') }}"
-  register: diff_result
-  changed_when: false
-
-- debug:
-    var: diff_result.diff.after
-
 
 - include_tasks: check_compliance_entity.yml
-  loop: entity_list
+  loop: "{{ entity_list }}"
+
+- fail:
+    msg: "The compliane check has failed. The failures are {{ combined_error }}"
+  when: combined_error.keys()|length>0
+
+- debug:
+    msg: "No deviation found."

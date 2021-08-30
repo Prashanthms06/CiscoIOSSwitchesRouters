@@ -1,7 +1,4 @@
 ---
-
-
-
 aaa_expected_compliance_list: [
 "aaa new-model",
 "aaa group server tacacs+ PSA_TACACS",
@@ -18,22 +15,71 @@ aaa_expected_compliance_list: [
 "aaa accounting system default start-stop group PSA_TACACS"
 ]
 
-tacacs_expected_compliance_list: []
+tacacs_expected_compliance_list: [
+"aaa group server tacacs+ PSA_TACACS",
+"server-private 10.175.224.33 key 7 1522382D2723382727636D",
+"server-private 10.164.224.34 key 7 073F126D6D000A06184253",
+"ip tacacs source-interface Loopback0"
+]
+
+snmp_expected_compliance_list: [
+"snmp-server trap-source Loopback0",
+"snmp-server enable traps cpu threshold",
+"snmp-server enable traps flash insertion",
+"snmp-server enable traps flash removal",
+"snmp-server enable traps envmon",
+"snmp-server enable traps hsrp",
+"snmp-server enable traps syslog",
+"snmp-server host 10.175.239.2 informs version 3 auth nwsnmpusr"
+]
+
+ntp_expected_compliance_list: [
+"ntp logging",
+"ntp authentication-key 13 md5 0236377A34575D751971272D35 7",
+"ntp authenticate",
+"ntp trusted-key 13",
+"ntp source Loopback0",
+"ntp access-group peer 10",
+"ntp master 2",
+"ntp server 10.55.5.200 prefer",
+"ntp server 10.57.5.200",
+"ntp peer 10.174.255.2"
+]
+
+logging_expected_compliance_list: [
+"logging trap debugging",
+"logging source-interface Loopback0",
+"logging host 10.175.239.2",
+"logging host 10.175.239.6"
+]
 
 entity_list: [
   {
     "entity_name":"AAA",
-    "grep_cmd": "in aaa"
-    "expected_result": aaa_expected_compliance_list
-  }.
-  {
-    "entity_name": "TACACS",
-    "grep_cmd": "set tacacs"
-    "expected_result": tacacs_expected_compliance_list
+    "grep_cmd": "in aaa",
+    "expected_result": "{{ aaa_expected_compliance_list }}"
   },
   {
-
+    "entity_name": "TACACS",
+    "grep_cmd": "in tacacs",
+    "expected_result": "{{ tacacs_expected_compliance_list }}"
+  },
+  {
+      "entity_name": "SNMP",
+      "grep_cmd": "in snmp",
+      "expected_result": "{{ snmp_expected_compliance_list }}"
+  },
+  {
+      "entity_name": "NTP",
+      "grep_cmd": "in ntp",
+      "expected_result": "{{ ntp_expected_compliance_list }}"
+  },
+  {
+      "entity_name": "Logging",
+      "grep_cmd": "in logging",
+      "expected_result": "{{ logging_expected_compliance_list }}"
   }
 ]
+combined_error: {}
 
 
