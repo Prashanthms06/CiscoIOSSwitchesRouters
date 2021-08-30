@@ -4,23 +4,26 @@
      commands: "show run | {{ item.grep_cmd }}"
   register: actual_result
 
-
 # THis result will have new line, you need to create the list of results and then iterate through
 - set_fact:
-   test: "{{ actual_result.stdout_lines }}"
-
+   actual_result_list: "{{ actual_result.stdout_lines[0] }}"
 - debug:
-    var: test
+    var: actual_result_list
 - set_fact:
-    ven: "{{ item.expected_result }}"
+    error_list: []
+- set_fact:
+    error_list: "{{ error_list }} + [  '{{ item }}' ] "
+  when:  item not in actual_result_list
+  loop: "{{ item.expected_result }}"
 
+- set_fact:
+   combined_error: "{{
+                     combined_error | combine(
+                     {
+                       item.entity_name: error_list
+                     })
+                 }}"
+   cacheable: yes
+  when: error_list|length>0
 - debug:
-    var: ven
-
-- set_fact :
-    error_list: "{{ error_list }} + [  '{{ item }}' ]"
-  when:  item not in "{{ test }}"
-  with_items: "{{ ven }}"
-
-- debug:
-    var: error_list
+    var: combined_error

@@ -61,24 +61,25 @@ entity_list: [
   },
   {
     "entity_name": "TACACS",
-    "grep_cmd": "set tacacs",
+    "grep_cmd": "in tacacs",
     "expected_result": "{{ tacacs_expected_compliance_list }}"
   },
   {
       "entity_name": "SNMP",
       "grep_cmd": "in snmp",
-          "expected_result": snmp_expected_compliance_list
+      "expected_result": "{{ snmp_expected_compliance_list }}"
   },
   {
       "entity_name": "NTP",
       "grep_cmd": "in ntp",
-          "expected_result": ntp_expected_compliance_list
+      "expected_result": "{{ ntp_expected_compliance_list }}"
   },
   {
       "entity_name": "Logging",
       "grep_cmd": "in logging",
-          "expected_result": logging_expected_compliance_list
+      "expected_result": "{{ logging_expected_compliance_list }}"
   }
 ]
+combined_error: {}
 
 
