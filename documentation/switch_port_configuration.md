@@ -15,12 +15,25 @@ ansible-playbook cisco_ios.yml -i inventory -e \
 "config_type":"switch_port_configuration",
 "operation":"create",
 "config":[
-          {"name":"GigabitEthernet1/0/4","access":{"vlan":60},"description":"Configuring via ansible "}
+          {"name":"GigabitEthernet1/0/4","access":{"vlan":100},"description":"Configuring via ansible "}
          ]
 }'
 ```
+Command to configure a port to a vlan in an access mode via Curl command
+
+```shell
+export var='{"extra_vars" :"{
+\"config_type\":\"switch_port_configuration\",
+\"operation\":\"create\",
+\"config\":[{\"name\":\"GigabitEthernet1/0/4\",\"access\":{\"vlan\":100},\"description\":\"ansible\"}]
+}"
+}'
+echo $var | curl -v -k -u admin:admin -H 'content-type: application/json' -X  POST -d "$(</dev/stdin)" https://172.16.240.138/api/v2/job_templates/14/launch/ 
+```
+
 
 Command to configure a port in the trunk mode
+
 ```shell
 ansible-playbook cisco_ios.yml -i inventory -e \
 '{
@@ -32,3 +45,18 @@ ansible-playbook cisco_ios.yml -i inventory -e \
 }'
 
 ```
+Command to configure a port in the trunk mode via Curl command
+
+```shell
+export var='{"extra_vars" :"{
+\"config_type\":\"switch_port_configuration\",
+\"operation\":\"create\",
+\"config\":[
+          {\"name\":\"GigabitEthernet1/0/5\",\"trunk\":{\"vlan_range\":\"60-70\"},\"description\":\"Configuring in trunk mode \"}
+         ]
+}"
+}'
+echo $var | curl -v -k -u admin:admin -H 'content-type: application/json' -X  POST -d "$(</dev/stdin)" https://172.16.240.138/api/v2/job_templates/14/launch/ 
+```
+
+
