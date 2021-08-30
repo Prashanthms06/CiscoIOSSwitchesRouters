@@ -207,3 +207,7 @@ fmc_object_types: {
      }
 }
 obj_type: 'obj_type'
+
+fmc_host: "{{ fmc_host }}"
+fmc_user: "{{ username }}"
+fmc_password: "{{ password }}"

@@ -18,11 +18,15 @@
        Supported operations are fmc_object_types.{{ object_type }}.supported_operations "
       when: operation|upper not in obj1[object_type]['supported_operations']
 
+    - fail:
+       msg: "req_body is either not defined or is empty"
+      when: req_body is not defined or req_body|trim == ""
+
     - name: "FMCCommon: Generating token"
       uri:
-        url: "https://10.10.20.40/api/fmc_platform/v1/auth/generatetoken"
-        user: user
-        password: user
+        url: "https://{{ fmc_host }}/api/fmc_platform/v1/auth/generatetoken"
+        user: "{{ username }}"
+        password: "{{ password }}"
         force_basic_auth: yes
         status_code: 204
         method: POST
@@ -32,19 +36,12 @@
     - debug:
         var: result.x_auth_access_token
 
-    - set_fact:
-       req_body: '{
-                                  "type": "AccessPolicy",
-                                                         "name": "AccessPolicy154",
-                                                         "defaultAction": {
-                                                           "action": "BLOCK"
-                                                         }
-                        }'
+    - debug:
+       msg: "URL:https://{{ fmc_host }}/api/fmc_config/v1/domain/{{ result.domain_uuid }}/object/{{ obj1[object_type]['obj_type'] }}"
 
-
-    - name: "FMCommon: Creating access policy"
+    - name: "FMCommon: Creating object {{ object_type }}"
       uri:
-       url: "https://10.10.20.40/api/fmc_config/v1/domain/{{ result.domain_uuid }}/policy/{{ obj1[object_type]['obj_type'] }}"
+       url: "https://{{ fmc_host }}/api/fmc_config/v1/domain/{{ result.domain_uuid }}/object/{{ obj1[object_type]['obj_type'] }}"
        method: POST
        body_format: json
        body: "{{ req_body }}"
