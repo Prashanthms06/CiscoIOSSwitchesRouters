@@ -10,6 +10,14 @@
         obj1: "{{ fmc_object_types }}"
 
     - fail:
+       msg: "object_type is either not defined or is empty"
+      when: object_type is not defined or object_type==""
+
+    - fail:
+       msg: "operation is either not defined or is empty"
+      when: operation is not defined or operation == ""
+
+    - fail:
        msg: "{{ object_type }} is not supported"
       when: obj1[object_type] is not defined
 
