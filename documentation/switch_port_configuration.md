@@ -60,3 +60,18 @@ echo $var | curl -v -k -u admin:admin -H 'content-type: application/json' -X  PO
 ```
 
 
+ommand to configure a port in the port mapping mode
+
+```shell
+ansible-playbook cisco_ios.yml -i inventory -e \
+'{
+"config_type":"switch_port_configuration",
+"operation":"create",
+"config":[
+          {"name":"GigabitEthernet1/0/5","port_mapping":{"vlan_num":22,port_channel_num: 2},"description":"Configuring port mapping "}
+         ]
+}'
+
+```
+
+

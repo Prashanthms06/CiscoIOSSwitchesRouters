@@ -1,0 +1,69 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+
+  tasks:
+
+    - set_fact:
+        obj1: "{{ fmc_object_types }}"
+
+    - fail:
+       msg: "object_type is either not defined or is empty"
+      when: object_type is not defined or object_type==""
+
+    - fail:
+       msg: "operation is either not defined or is empty"
+      when: operation is not defined or operation == ""
+
+    - fail:
+       msg: "{{ object_type }} is not supported"
+      when: obj1[object_type] is not defined
+
+    - fail:
+       msg: "operation {{ operation }} not in supported operation for object_type {{ object_type }}.
+       Supported operations are fmc_object_types.{{ object_type }}.supported_operations "
+      when: operation|upper not in obj1[object_type]['supported_operations']
+
+    - fail:
+       msg: "req_body is either not defined or is empty"
+      when: req_body is not defined or req_body|trim == ""
+
+    - name: "FMCCommon: Generating token"
+      uri:
+        url: "https://{{ fmc_host }}/api/fmc_platform/v1/auth/generatetoken"
+        user: "{{ username }}"
+        password: "{{ password }}"
+        force_basic_auth: yes
+        status_code: 204
+        method: POST
+        validate_certs: no
+      register: result
+
+    - debug:
+        var: result.x_auth_access_token
+
+    - debug:
+       msg: "URL:https://{{ fmc_host }}/api/fmc_config/v1/domain/{{ result.domain_uuid }}/object/{{ obj1[object_type]['obj_type'] }}"
+
+    - name: "FMCommon: Creating object {{ object_type }}"
+      uri:
+       url: "https://{{ fmc_host }}/api/fmc_config/v1/domain/{{ result.domain_uuid }}/object/{{ obj1[object_type]['obj_type'] }}"
+       method: POST
+       body_format: json
+       body: "{{ req_body }}"
+       validate_certs: no
+       status_code: 201
+       headers:
+         Content-Type: "application/json"
+         X-auth-access-token: "{{ result.x_auth_access_token }}"
+         X-auth-refresh-token: "{{ result.x_auth_refresh_token }}"
+      register: result
+
+    - debug:
+       var: result
+
+
+
+

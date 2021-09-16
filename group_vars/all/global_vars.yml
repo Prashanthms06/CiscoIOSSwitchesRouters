@@ -211,3 +211,12 @@ obj_type: 'obj_type'
 fmc_host: "{{ fmc_host }}"
 fmc_user: "{{ username }}"
 fmc_password: "{{ password }}"
+
+#Service now variables
+skip_service_now_operation: False
+sn_base_uri: https://intpsatest.service-now.com/
+sn_ticket_update_uri: 'https://intpsatest.service-now.com/api/now/table/sc_req_item/'
+sn_auth: {
+ 'username': 'tuas_sn_integration',
+ 'password': 'tU@3_S3rvic3N0w'
+}

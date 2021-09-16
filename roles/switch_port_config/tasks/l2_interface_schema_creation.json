@@ -14,6 +14,9 @@
         },
         {
           "required": ["trunk"]
+        },
+        {
+          "required": ["port_mapping"]
         }
       ],
       "properties": {
@@ -45,6 +48,24 @@
             "vlan_range" : {
               "type": "string",
               "description": "List of allowed VLANs in a given trunk port. These are the only VLANs that will be configured on the trunk."
+            }
+          }
+        },
+        "port_mapping" : {
+          "type": "object",
+          "description": "Switchport mode port maping command to configure the port mapping.",
+          "required": ["vlan_num","port_channel_num"],
+          "properties": {
+            "vlan_num" : {
+              "type": "number",
+              "description": "Configure given VLAN in port mapping configuration. It's used as the access VLAN ID.",
+              "minimum": 1,
+              "maximum": 4094
+            },
+            "port_channel_num": {
+              "type": "number",
+              "description": "port channel number configured for a given interface",
+              "minimum": 1
             }
           }
         }

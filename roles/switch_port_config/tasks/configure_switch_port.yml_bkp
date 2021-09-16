@@ -33,7 +33,7 @@
           - "device-tracking attach-policy device-tracking-policy"
           - "no cdp enable"
           - "authentication timer reauthenticate server"
-          - "access-session control-direction in"
+          #- "access-session control-direction in"
           - "access-session port-control auto"
           - "mab"
           - "access-session host-mode multi-auth"
@@ -49,10 +49,13 @@
       # we are putting this configuration after the above configuration, becaue this configuration
      # ask for user input. When we do like this it doesn't ask user prompt.
      - name: "SwitchPortConfiguration: Adding session for port {{ item.name }} in access mode"
-       ios_config:
-        lines:
-          - "access-session control-direction in"
-        parents: "interface  {{ item.name }} "
+       ios_command:
+        commands:
+          - "conf t"
+          - "interface  {{ item.name }}"
+          -  command: "access-session control-direction in"
+             answer: yes
+        #parents: "interface  {{ item.name }} "
   when: item.access is defined
 
 
@@ -73,6 +76,7 @@
           - "no shutdown"
         parents: "interface  {{ item.name }} "
   when: item.trunk is defined
+
 
 #interface {{ interface_num }}
 # switchport
