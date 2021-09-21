@@ -16,6 +16,24 @@
 - set_fact:
     default_description: "{{ item.description | default(description) }}"
 
+# we will check if the interface is already in connected state.
+- name: "SwitchPortConfiguration: Checking the status of interface {{ item.name }}"
+  ios_command:
+   commands:
+     - "show interface {{ item.name }} status | include connected"
+  register: result
+
+- name: "Dumping the status of the interface {{ item.name }}"
+  debug:
+    var: result
+
+- fail:
+   msg: "Interface {{ item.name }} is already in connected state. Aborting the operation."
+  when: not result.stdout[0]==""
+
+- debug:
+    msg: "The interface {{ item.name }} is not in connected state. Proceeding with configuration"
+
 - name: "SwitchPortConfiguration: Adding description to port {{ item.name }}"
   ios_config:
    lines:
@@ -25,6 +43,19 @@
 
 - name: "SwitchPortConfiguration in access mode"
   block:
+     - name: "SwitchPortConfiguration: Getting the authentication display config mode"
+       ios_command:
+        commands:
+          - "authentication display config-mode"
+       register: result
+
+     - name: "Dumping the authentication display config mode"
+       debug:
+        var: result
+    #There can be following two values
+    #Current configuration mode is new-style
+    #Current configuration mode is legacy
+
      - name: "SwitchPortConfiguration: Configuring port {{ item.name }} in access mode"
        ios_config:
         lines:
@@ -33,10 +64,7 @@
           - "device-tracking attach-policy device-tracking-policy"
           - "no cdp enable"
           - "authentication timer reauthenticate server"
-          - "access-session control-direction in"
-          - "access-session port-control auto"
           - "mab"
-          - "access-session host-mode multi-auth"
           - "dot1x timeout tx-period 30"
           - "dot1x pae authenticator"
           - "dot1x max-reauth-req 3"
@@ -47,12 +75,37 @@
           - "no shutdown"
         parents: "interface  {{ item.name }} "
       # we are putting this configuration after the above configuration, becaue this configuration
-     # ask for user input. When we do like this it doesn't ask user prompt.
-     - name: "SwitchPortConfiguration: Adding session for port {{ item.name }} in access mode"
+     # ask for user input based on the authentication display config-mode.
+          #- "access-session control-direction in"
+          #- "access-session port-control auto"
+         #- "access-session host-mode multi-auth"
+     # if the authentication display config-mode is legacy, then we have to give the prompt and give the answer to yes
+     # If the authentication display config-mode is new-style, then we don't have ask for the user prompt.
+
+     - name: "SwitchPortConfiguration: Adding session for port {{ item.name }} in access mode in legacy style"
+       ios_command:
+        commands:
+          - "conf t"
+          - "interface  {{ item.name }}"
+          - command: 'access-session control-direction in'
+            prompt: 'This operation will permanently convert all relevant authentication commands to their CPL control-policy equivalents. As this conversion is irreversible and will disable the conversion CLI ''authentication display \[legacy|new-style\]'', you are strongly advised to back up your current configuration before proceeding.\nDo you wish to continue? \[yes\]: '
+           # prompt: "Do you wish to continue? [yes]: "
+            answer: "yes"
+        #For the first command only we need to press yes
+          - 'access-session port-control auto'
+          - 'access-session host-mode multi-auth'
+       when: result.stdout[0]=='Current configuration mode is legacy'
+
+
+     - name: "SwitchPortConfiguration: Adding session for port {{ item.name }} in access mode in new-style"
        ios_config:
-        lines:
-          - "access-session control-direction in"
-        parents: "interface  {{ item.name }} "
+         lines:
+           - "access-session control-direction in"
+           - "access-session port-control auto"
+           - "access-session host-mode multi-auth"
+         parents: "interface  {{ item.name }} "
+       when: result.stdout[0]=='Current configuration mode is new-style'
+
   when: item.access is defined
 
 
