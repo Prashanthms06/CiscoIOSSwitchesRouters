@@ -2,6 +2,7 @@
 
 - name: "SwitchBaseACLCreation: Creating standard acl"
   block:
+
     - name: "SwitchBaseACLCreation: Reading the ACL standard configuration"
       set_fact:
         standard_commands: "{{ lookup('template', './acl_standard_commands.j2') }}"
@@ -9,9 +10,20 @@
     - debug:
        var: standard_commands
 
-    - name: "SwitchBaseACLCreation: Running command for standard acl"
+    - name: "SwitchBaseACLCreation: Running commands for standard acl"
       ios_command:
         commands: "{{ standard_commands }}"
+      register: result
+
+    - name: "SwitchBaseACLPostCreationVerification: Executing the search in the device"
+      ios_command:
+        commands:
+         - "show access-lists  {{ acl_num }} "
+      register: standard_list
+
+    - debug:
+       msg: "ACL list configured for {{ acl_num }} is \n {{ standard_list.stdout[0] }}"
+
   when: acl_name=="standard"
 
 

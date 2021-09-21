@@ -5,7 +5,7 @@
 
 - fail:
    msg: "Either the grant type is not defined or it doesn't have valid values. The valid values are {{ supported_grant_types }}"
-  when: grant is not defined or grant not in supported_grant_type
+  when: grant is not defined or grant not in supported_grant_types
 
 - fail:
    msg: "Either the interface is not defined or is empty"
@@ -23,11 +23,17 @@
 - debug:
    var: source_ip
 
-# the gateway ip address must not have nay netmask. i.e the gateway ip address must not be given as 1.1.1.1/24
 - fail:
-   msg: "Sourfce ip address must not have any net mask. .
-        Example of gateway ip address is 1.1.1.1. Providing ip address as 1.1.1.1/24 is not permitted"
-  when: not source_ip.netmask|trim==""
+   msg: "Either the source masking bits is not present or is empty"
+  when: src_mask_bits is not defined or src_mask_bits|trim==""
+
+- ip_util:
+    ip_address: "{{ src_mask_bits }}"
+    type: "ipv4"
+  register: src_mask_ip
+
+- debug:
+   var: src_mask_ip
 
 - fail:
    msg: "Direction is either not defined or it doesn't have valid values. The valid values are  {{ supported_direction_values }}"
@@ -45,25 +51,27 @@
   block:
     - name: "Converting the value to integer"
       set_fact:
-        acl_number: "acl_num|int"
+        acl_number: "{{ acl_num|int }}"
+
+    - debug:
+       msg: "ACL number retrieved is {{ acl_number }}"
     - set_fact:
         acl_name: 'standard'
-      when: acl_number > 0 and acl_number < 100
+      when: acl_number|int > 0 and acl_number|int < 100
 
     - set_fact:
         acl_name: 'extended'
-      when: acl_number > 99 and acl_number < 200
+      when: acl_number|int > 99 and acl_number|int < 200
 
   rescue:
     - set_fact:
        acl_name: 'extended'
 
+- debug:
+   msg: "ACL is of type {{ acl_name }}"
 
 - name: "SwitchBaseACLPrelim: Validating the extended acls"
   block:
-    - fail:
-       msg: "Either the source masking bits is not present or is empty"
-      when: src_mask_bits is not defined or src_mask_bits|trim==""
 
     - fail:
        msg: "Either the destination field is not present or is empty"

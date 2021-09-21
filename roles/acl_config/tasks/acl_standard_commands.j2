@@ -1,7 +1,7 @@
 [
 "conf t",
-"ip access list standard {{ acl_num }}",
-"{{ grant }} source {{ source }}",
+"ip access-list standard {{ acl_num }}",
+"{{ grant }} {{ source }} {{ src_mask_bits }}",
 "interface {{ interface }}",
-"ip access-group {{ acl_num }} {{ direction }}""
+"ip access-group {{ acl_num }} {{ direction }}"
 ]

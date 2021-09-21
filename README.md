@@ -58,6 +58,8 @@ Sr.Num|Features|Description|
 |------|--------|-----------|
 |1|[SwitchPortConfiguration](documentation/switch_port_configuration.md) | Switch port  related configuration|
 |2|[VLANConfiguration](documentation/vlan_configuration.md) | VLAN Configuration|
+|3|[ComplianceCheck](documentation/compliance.md) | Compliance check|
+|3|[SwitchBaseACL Configuration](documentation/switch_base_acl.md) | ACL configuration|
 
 
 
