@@ -1,0 +1,7 @@
+[
+"conf t",
+"ip access list standard {{ acl_num }}",
+"{{ grant }} source {{ source }}",
+"interface {{ interface }}",
+"ip access-group {{ acl_num }} {{ direction }}""
+]

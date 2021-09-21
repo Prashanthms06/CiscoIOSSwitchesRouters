@@ -1,0 +1,12 @@
+---
+- include_tasks: acl_creational_task_prelim.yml
+  when: operation|upper=="CREATE"
+
+- include_tasks: acl_deletion_tasks_prelim.yml
+  when: operation|upper=="DELETE"
+
+- include_tasks: acl_creation.yml
+  when: operation|upper=="CREATE"
+
+- include_tasks: acl_deletion.yml
+  when: operation|upper=="DELETE"

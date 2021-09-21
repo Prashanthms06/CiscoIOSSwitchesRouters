@@ -1,0 +1,27 @@
+{
+  "$id": "https://opensource.com/arrays.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Representation of  destination ports while creation switch base acl configurations",
+  "type": "array",
+  "items": { "$ref": "#/$defs/options" },
+  "minItems": 1,
+  "$defs": {
+    "options": {
+      "type": "object",
+      "required": ["port_type" ,"port_num"],
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "description": "Type of the part (tcp/udp)",
+           "enum": ["tcp","udp"]
+        },
+        "port_num": {
+          "type": "number",
+          "description": "port number",
+           "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

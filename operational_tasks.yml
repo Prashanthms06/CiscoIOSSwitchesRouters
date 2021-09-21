@@ -8,3 +8,8 @@
    include_role:
     name: vlan
    when: config_type|upper=="VLAN_CONFIGURATION"
+
+ - name: "Configuring Switch base ACL configuraiotn"
+   include_role:
+     name: acl_config
+   when: config_type|upper=="ACL"

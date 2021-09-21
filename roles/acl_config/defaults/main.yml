@@ -1,0 +1,3 @@
+---
+supported_grant_types: ["permit","deny"]
+supported_direction_values: ["in","out"]

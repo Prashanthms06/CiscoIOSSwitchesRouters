@@ -1,0 +1,30 @@
+---
+
+- name: "SwitchBaseACLCreation: Creating standard acl"
+  block:
+    - name: "SwitchBaseACLCreation: Reading the ACL standard configuration"
+      set_fact:
+        standard_commands: "{{ lookup('template', './acl_standard_commands.j2') }}"
+
+    - debug:
+       var: standard_commands
+
+    - name: "SwitchBaseACLCreation: Running command for standard acl"
+      ios_command:
+        commands: "{{ standard_commands }}"
+  when: acl_name=="standard"
+
+
+- name: "SwitchBaseACLCreation: Creating extended acl"
+  block:
+    - name: "SwitchBaseACLCreation: Reading the ACL extended configuration"
+      set_fact:
+        extended_commands: "{{ lookup('template', './acl_extended_commands.j2') }}"
+
+    - debug:
+       var: standard_commands
+
+    - name: "SwitchBaseACLCreation: Running command for extended acl"
+      ios_command:
+        commands: "{{ extended_commands }}"
+  when: acl_name=="extended"
