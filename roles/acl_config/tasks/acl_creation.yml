@@ -34,9 +34,18 @@
         extended_commands: "{{ lookup('template', './acl_extended_commands.j2') }}"
 
     - debug:
-       var: standard_commands
+       var: extended_commands
 
     - name: "SwitchBaseACLCreation: Running command for extended acl"
       ios_command:
         commands: "{{ extended_commands }}"
+
+    - name: "SwitchBaseACLPostCreationVerification: Executing the search in the device"
+      ios_command:
+        commands:
+          - "show access-lists  {{ acl_num }} "
+      register: standard_list
+
+    - debug:
+        msg: "ACL list configured for {{ acl_num }} is \n {{ standard_list.stdout[0] }}"
   when: acl_name=="extended"

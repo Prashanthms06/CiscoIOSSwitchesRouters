@@ -55,13 +55,14 @@
 
     - debug:
        msg: "ACL number retrieved is {{ acl_number }}"
+
     - set_fact:
         acl_name: 'standard'
       when: acl_number|int > 0 and acl_number|int < 100
 
     - set_fact:
         acl_name: 'extended'
-      when: acl_number|int > 99 and acl_number|int < 200
+      when: acl_number|int==0 or ( acl_number|int > 99 and acl_number|int < 200)
 
   rescue:
     - set_fact:
@@ -75,7 +76,7 @@
 
     - fail:
        msg: "Either the destination field is not present or is empty"
-      when: destination is empty or destination|trim==""
+      when: destination is not defined or destination|trim==""
 
     - fail:
        msg: "Either the destination masking bits is not present or is empty"
