@@ -1,0 +1,20 @@
+[
+"conf t",
+{% if acl_name=='standard' %}
+    {% if delete_all==true %}
+        "no ip access-list standard {{ acl_num }}",
+    {% else %}
+        "ip access-list standard {{ acl_num }}",
+        "no {{ grant }} {{ source }} {{ src_mask_bits }}",
+    {% endif %}
+{% else %}
+     {% if delete_all==true %}
+        "no ip access-list extended {{ acl_num }}",
+     {% else %}
+        "ip access-list extended {{ acl_num }}",
+        {% for dest_ports_def in dest_ports %}
+            " no {{ grant }} {{ dest_ports_def.port_type }} {{ source }} {{ src_mask_bits }} {{ destination }} {{ dest_mask_bits }} eq {{ dest_ports_def.port_num }}",
+        {% endfor %}
+     {% endif %}
+{% endif %}
+]
