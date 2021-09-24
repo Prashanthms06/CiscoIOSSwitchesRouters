@@ -1,0 +1,13 @@
+---
+- name: "SwitchBaseACLDeletion: Deleting acl commands"
+  set_fact:
+    acl_commands: "{{ lookup('template', './acl_deletion_commands.j2') }}"
+
+- debug:
+     var: acl_commands
+
+- name: "SwitchBaseACLDeletion: Executing acl Deletion commands"
+  ios_command:
+    commands: "{{ acl_commands }}"
+  register: result
+

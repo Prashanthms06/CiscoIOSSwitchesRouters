@@ -1,6 +1,6 @@
 ---
 - fail:
-   "msg" : "Either the variable delete_all is not defined or doesn have valid values. Supported values are {{ valid_user_prompts }}"
+   "msg" : "Either the variable delete_all is not defined or doesn't have valid values. Supported values are {{ valid_user_prompts }}"
   when: delete_all is not defined or delete_all not in valid_user_prompts
 
 - fail:
@@ -9,19 +9,25 @@
 
 - fail:
    msg: "Either the grant type is not defined or it doesn't have valid values. The valid values are {{ supported_grant_types }}"
-  when: grant is not defined or grant not in supported_grant_types and not delete_all
+  when:
+    - grant is not defined or grant not in supported_grant_types
+    - delete_all == "no"
 
 
 
 - fail:
     msg: "Either source is not defined or is not empty"
-  when: source is not defined or source|trim=="" and not delete_all
+  when:
+    - source is not defined or source|trim==""
+    - delete_all == "no"
 
 
 
 - fail:
    msg: "Either the source masking bits is not present or is empty"
-  when: src_mask_bits is not defined or src_mask_bits|trim=="" and not delete_all
+  when:
+    - src_mask_bits is not defined or src_mask_bits|trim==""
+    - delete_all == "no"
 
 
 
@@ -74,4 +80,6 @@
         criteria: "{{ lookup('ansible.builtin.file', './destination_ports_schema.json')}}"
         engine: ansible.utils.jsonschema
 
-  when: acl_name=="extended" and not delete_all
+  when:
+    - acl_name=="extended"
+    - delete_all == "no"
