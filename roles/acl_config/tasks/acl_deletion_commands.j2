@@ -1,14 +1,14 @@
 [
 "conf t",
 {% if acl_name=='standard' %}
-    {% if delete_all==true %}
+    {% if delete_all=='yes' %}
         "no ip access-list standard {{ acl_num }}",
     {% else %}
         "ip access-list standard {{ acl_num }}",
         "no {{ grant }} {{ source }} {{ src_mask_bits }}",
     {% endif %}
 {% else %}
-     {% if delete_all==true %}
+     {% if delete_all=='yes' %}
         "no ip access-list extended {{ acl_num }}",
      {% else %}
         "ip access-list extended {{ acl_num }}",

@@ -1,3 +1,5 @@
 ---
 supported_grant_types: ["permit","deny"]
 supported_direction_values: ["in","out"]
+valid_user_prompts: ["yes","no"]
+#
