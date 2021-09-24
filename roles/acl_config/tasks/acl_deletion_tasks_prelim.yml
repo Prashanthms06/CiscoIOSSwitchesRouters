@@ -1,0 +1,77 @@
+---
+- fail:
+   "msg" : "Either the variable delete_all is not defined or doesn have valid values. Supported values are {{ valid_user_prompts }}"
+  when: delete_all is not defined or delete_all not in valid_user_prompts
+
+- fail:
+   msg: "Either the acl_num is not defined or is empty"
+  when: acl_num is not defined or acl_num|trim==""
+
+- fail:
+   msg: "Either the grant type is not defined or it doesn't have valid values. The valid values are {{ supported_grant_types }}"
+  when: grant is not defined or grant not in supported_grant_types and not delete_all
+
+
+
+- fail:
+    msg: "Either source is not defined or is not empty"
+  when: source is not defined or source|trim=="" and not delete_all
+
+
+
+- fail:
+   msg: "Either the source masking bits is not present or is empty"
+  when: src_mask_bits is not defined or src_mask_bits|trim=="" and not delete_all
+
+
+
+# Based on the value of ACL number we have to determine if the ACL is of type standard or extended
+# acl_num is numeric and the value is between 1 to 99 then it is standard else
+# acl_num is numeriex and the value is greater than 99 < 200 then it is extended
+# if acl_num is not not numeric then it is extended
+- set_fact:
+    acl_name:
+    cacheable: True
+
+- name: "SwitchBaseACLPrelim: Determining if the operation is of standard or not"
+  block:
+    - name: "Converting the value to integer"
+      set_fact:
+        acl_number: "{{ acl_num|int }}"
+
+    - debug:
+       msg: "ACL number retrieved is {{ acl_number }}"
+
+    - set_fact:
+        acl_name: 'standard'
+      when: acl_number|int > 0 and acl_number|int < 100
+
+    - set_fact:
+        acl_name: 'extended'
+      when: acl_number|int==0 or ( acl_number|int > 99 and acl_number|int < 200)
+
+  rescue:
+    - set_fact:
+       acl_name: 'extended'
+
+- debug:
+   msg: "ACL is of type {{ acl_name }}"
+
+- name: "SwitchBaseACLPrelim: Validating the extended acls"
+  block:
+
+    - fail:
+       msg: "Either the destination field is not present or is empty"
+      when: destination is not defined or destination|trim==""
+
+    - fail:
+       msg: "Either the destination masking bits is not present or is empty"
+      when: dest_mask_bits is not defined or dest_mask_bits|trim==""
+
+    - name: "SwitchBaseACLPrelim: Ensuring destination ports conforms to the schema"
+      ansible.utils.validate:
+        data: "{{ dest_ports }}"
+        criteria: "{{ lookup('ansible.builtin.file', './destination_ports_schema.json')}}"
+        engine: ansible.utils.jsonschema
+
+  when: acl_name=="extended" and not delete_all
