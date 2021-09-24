@@ -1,0 +1,14 @@
+[
+"conf t",
+{% if acl_name=='standard' %}
+    "ip access-list standard {{ acl_num }}",
+    "{{ grant }} {{ source }} {{ src_mask_bits }}",
+{% else %}
+    "ip access-list extended {{ acl_num }}",
+    {% for dest_ports_def in dest_ports %}
+        "{{ grant }} {{ dest_ports_def.port_type }} {{ source }} {{ src_mask_bits }} {{ destination }} {{ dest_mask_bits }} eq {{ dest_ports_def.port_num }}",
+    {% endfor %}
+{% endif %}
+"interface {{ interface }}",
+"ip access-group {{ acl_num }} {{ direction }}"
+]

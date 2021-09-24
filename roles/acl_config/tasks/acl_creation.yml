@@ -1,51 +1,21 @@
 ---
+- name: "SwitchBaseACLCreation: Generating acl commands"
+  set_fact:
+    acl_commands: "{{ lookup('template', './acl_creation_commands.j2') }}"
 
-- name: "SwitchBaseACLCreation: Creating standard acl"
-  block:
+- debug:
+     var: acl_commands
 
-    - name: "SwitchBaseACLCreation: Reading the ACL standard configuration"
-      set_fact:
-        standard_commands: "{{ lookup('template', './acl_standard_commands.j2') }}"
+- name: "SwitchBaseACLCreation: Executing acl creation commands"
+  ios_command:
+    commands: "{{ acl_commands }}"
+  register: result
 
-    - debug:
-       var: standard_commands
+- name: "SwitchBaseACLPostCreationVerification: Executing the search in the device"
+  ios_command:
+    commands:
+     - "show access-lists  {{ acl_num }} "
+  register: standard_list
 
-    - name: "SwitchBaseACLCreation: Running commands for standard acl"
-      ios_command:
-        commands: "{{ standard_commands }}"
-      register: result
-
-    - name: "SwitchBaseACLPostCreationVerification: Executing the search in the device"
-      ios_command:
-        commands:
-         - "show access-lists  {{ acl_num }} "
-      register: standard_list
-
-    - debug:
-       msg: "ACL list configured for {{ acl_num }} is \n {{ standard_list.stdout[0] }}"
-
-  when: acl_name=="standard"
-
-
-- name: "SwitchBaseACLCreation: Creating extended acl"
-  block:
-    - name: "SwitchBaseACLCreation: Reading the ACL extended configuration"
-      set_fact:
-        extended_commands: "{{ lookup('template', './acl_extended_commands.j2') }}"
-
-    - debug:
-       var: extended_commands
-
-    - name: "SwitchBaseACLCreation: Running command for extended acl"
-      ios_command:
-        commands: "{{ extended_commands }}"
-
-    - name: "SwitchBaseACLPostCreationVerification: Executing the search in the device"
-      ios_command:
-        commands:
-          - "show access-lists  {{ acl_num }} "
-      register: standard_list
-
-    - debug:
-        msg: "ACL list configured for {{ acl_num }} is \n {{ standard_list.stdout[0] }}"
-  when: acl_name=="extended"
+- debug:
+   msg: "ACL list configured for {{ acl_num }} is \n {{ standard_list.stdout[0] }}"
