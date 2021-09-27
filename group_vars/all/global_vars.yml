@@ -2,7 +2,7 @@
 ansible_network_os: ios
 ansible_connection: network_cli
 supported_config_types: ["SWITCH_PORT_CONFIGURATION","VLAN_CONFIGURATION","AUDIT","ACL","L3_CONFIGURATION"]
-crud_operations: ["CREATE","UPDATE","DELETE"]
+crud_operations: ["CREATE","UPDATE","DELETE","GET"]
 non_crud_operations: ["AUDIT"]
 supported_operation_types: "{{ crud_operations + non_crud_operations }}"
 description:
