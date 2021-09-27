@@ -7,7 +7,7 @@
 
 - name: "CommonValidations: Ensure valid type values are provided"
   fail:
-    msg: "Invalid configuration type {{ operation }} provided. Valid operation types are {{ supported_config_types }}"
+    msg: "Invalid configuration type {{ config_type }} provided. Valid operation types are {{ supported_config_types }}"
   when: config_type|upper not in supported_config_types
 
 - name: "CommonValidations: Ensuring operation variable is defined"
@@ -30,7 +30,7 @@
     msg: "Update operation not yet supported for vlan configuration"
   when: operation|upper=="UPDATE" and config_type|upper=="VLAN_CONFIGURATION"
 
-- name: "L3Validation: Update operation  not yet supported"
+- name: "Layer3Validation: Update operation  not yet supported"
   fail:
-    msg: "Update operation not yet supported for L3 configuration"
-  when: operation|upper=="UPDATE" and config_type|upper=="L3_CONFIGURATION"
+    msg: "Update operation not yet supported for Layer3 configuration"
+  when: operation|upper=="UPDATE" and ( config_type|upper=="PHYSICAL_LAYER3" or config_type|upper=="LOGICAL _LAYER3")

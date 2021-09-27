@@ -1,0 +1,6 @@
+---
+- include_tasks: prelim.yml
+  when: config_type|upper=="LOGICAL_LAYER3"
+
+- include_tasks: logical_layer3_configuration.yml
+  when: operation|upper=="CREATE"

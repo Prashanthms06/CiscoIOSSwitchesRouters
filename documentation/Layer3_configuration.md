@@ -13,7 +13,7 @@
 Use the following sample ansible command to add layer3 config into physical interface
 ```shell
 ansible-playbook cisco_ios.yml -i inventory -e '{
-"config_type":"L3_configuration",
+"config_type":"PHYSICAL_LAYER3",
 "operation":"create",
 "config":[
             {

@@ -1,6 +1,8 @@
 #CiscoIOSSwitchesRouters/roles/layer3/tasks/configure_L3.yml
-
 ---
+- fail:
+    msg : "{{ item.name }} is not a valid interface name"
+  when: item.name not in interface_list
 
 - name: "L3_configuration: Creating the description with job id {{ tower_job_id }}"
   block:
@@ -41,6 +43,10 @@
       msg: "Either ip mask is not defined or empty"
      when: item.ip_mask is not defined or item.ip_mask|trim==""
 
+   - ip_util:
+       ip_address: "{{ item.ip_mask }}"
+       type: "ipv4"
+
    - name: "L3_configuration : Setting the ip address {{ item.ipv4addr }} to Layer 3 interface {{ item.name }} "
      ios_command:
       commands:
@@ -51,6 +57,8 @@
           - "ip address {{ item.ipv4addr }} {{ item.ip_mask }}"
           - "no shut"
           - "end"
+
+   - include_tasks: verify_physical_layer3_configuration.yml
   when: item.ipv4addr is defined
 
 #cat9k#conf t

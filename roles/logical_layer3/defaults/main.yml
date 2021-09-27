@@ -1,0 +1,9 @@
+---
+expected_logical_layer3_list: [
+ "ip address {{ item.ipv4addr }} {{ item.ip_mask }}",
+ "no ip redirects",
+ "no ip unreachables",
+ "no ip proxy-arp",
+ "ospfv3 1 ipv4 area 1",
+
+]

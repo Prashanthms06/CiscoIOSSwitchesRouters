@@ -1,0 +1,44 @@
+{
+  "$id": "https://opensource.com/arrays.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Representation of  Layer-2 interfaces attributes of NX-OS Interfaces.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/options" },
+  "$defs": {
+    "options": {
+      "type": "object",
+      "required": [ "name","vlan_id","ipv4addr","ip_mask"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the vlan"
+        },
+
+         "vlan_id": {
+          "type": "integer",
+          "description": "ID of the vlan"
+        },
+        "ipv4addr": {
+          "type": "string",
+          "description": "Configures the IPv4 address for the vlan",
+          "format": "ip-address"
+        },
+         "ipv6addr": {
+          "type": "string",
+          "description": "Configures the IPv6 address for the vlan",
+          "format": "ip-address"
+        },
+        "ip_mask": {
+           "type": "string",
+           "description": "Configures the ip mask for the vlan",
+           "format": "ip-address"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the vlan"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

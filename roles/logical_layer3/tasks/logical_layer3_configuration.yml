@@ -1,0 +1,17 @@
+---
+- name: "LogicalLayer3Configurartion: Ensuring config data conforms to the schema"
+  ansible.utils.validate:
+   data: "{{ config }}"
+   criteria: "{{ lookup('ansible.builtin.file', './logical_layer3_schema.json')}}"
+   engine: ansible.utils.jsonschema
+
+- name: "VLANConfiguration: Checking if the vlan ids are already existing"
+  fail:
+    msg: "vlan id {{ item.vlan_id }} already exists "
+  when: item.vlan_id|string in vlan_id_list
+  with_items: "{{ config }}"
+
+
+- name: "VLANConfiguration: Adding SVI to vlans"
+  include_tasks: vlan_svi_configuration.yml
+  loop: "{{ config }}"
