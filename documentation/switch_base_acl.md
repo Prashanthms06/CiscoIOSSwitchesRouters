@@ -44,3 +44,17 @@ ansible-playbook cisco_ios.yml -i inventory -e \
 ]
 }'
 ```
+
+Command to get the acl checks
+```shell
+
+
+ansible-playbook cisco_ios.yml -i inventory -e \
+'{
+"config_type":"acl",
+"operation":"get",
+"acl_list": [
+"1","2","NamedACL"
+]
+}'
+```
