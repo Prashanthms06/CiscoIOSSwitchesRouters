@@ -16,7 +16,7 @@ def main():
         )
     )
     regex = module.params['regex']
-    value = module.params['lines'].lower()
+    value = module.params['lines']
     #regex = r"^\s(.*)"
     regex=r"%s" % regex
 
@@ -34,7 +34,7 @@ def main():
 
 
     except Exception as e:
-        module.fail_json(msg="Error converting the ip address:\n{}".format(traceback.format_exc()))
+        module.fail_json(msg="Error while searching:\n{}".format(traceback.format_exc()))
         return
     response["result"] = result
     response["changed"] = True

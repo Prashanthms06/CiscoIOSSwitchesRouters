@@ -1,0 +1,25 @@
+---
+- name: "SwitchPortConfiguration PostCheck: Verifying the switch port access configuration"
+  ios_command:
+     commands: "show run interface {{ item.name }}"
+  register: actual_result
+
+- set_fact:
+    verified_list: []
+
+- set_fact:
+    verified_list: "{{ verified_list }} + [  '{{ access_entry }}' ] "
+  when:  access_entry not in actual_result.stdout_lines[0]
+  loop: "{{ expected_access_list }}"
+  loop_control:
+    loop_var: access_entry
+
+- debug:
+    var: verified_list
+
+- fail:
+    msg: "Not all configurations are applied. Configuration that are not applied are {{ verified_list }}"
+  when: verified_list| length>0
+
+- debug:
+    msg: "SwitchPortConfiguration in access mode is successfully verified."

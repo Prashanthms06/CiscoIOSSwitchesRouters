@@ -35,6 +35,19 @@
   debug:
     var: result
 
+- name: "VLANConfiguration: Verifying the Vlan Configuration"
+  ios_command:
+     commands: "show run vlan brief | in {{ item.name }}"
+  with_items: "{{ config }}"
+  register: vlan_result
+
+- debug:
+    var: vlan_result.results[0].item
+
+- fail:
+    msg: "Vlan Configuration failed for {{ item }}"
+  when: vlan_result.results[0].item.name != item.name or vlan_result.results[0].item.vlan_id != item.vlan_id
+  with_items: "{{ config }}"
 
 - name: "VLANConfiguration: Adding SVI to vlans"
   include_tasks: vlan_svi_configuration.yml

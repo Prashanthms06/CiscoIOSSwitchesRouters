@@ -106,6 +106,8 @@
          parents: "interface  {{ item.name }} "
        when: result.stdout[0]=='Current configuration mode is new-style'
 
+     - include_tasks: verify_access_configuration.yml
+
   when: item.access is defined
 
 
@@ -119,12 +121,21 @@
         lines:
           - "switchport trunk allowed vlan {{ item.trunk.vlan_range }}"
           - "switchport mode trunk"
-          - "cts manual"
-          - "policy static sgt 500 trusted"
+          - "no shutdown"
+        parents:
+         - "interface  {{ item.name }} "
      # The following line has to be uncommented when running in the PSA environment
           #- "service-policy type control subscriber PSA_DOT1X_POLICY"
-          - "no shutdown"
-        parents: "interface  {{ item.name }} "
+     - name: "SwitchPortConfiguration: Configuring port {{ item.name }} in trunk mode"
+       ios_config:
+         lines:
+           - "policy static sgt 500 trusted"
+         parents:
+           - "interface  {{ item.name }} "
+           - "cts manual"
+
+     - include_tasks: verify_trunk_configuration.yml
+
   when: item.trunk is defined
 
 #interface {{ interface_num }}

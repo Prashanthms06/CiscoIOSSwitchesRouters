@@ -6,3 +6,30 @@ vlan_id_list: []
 
 #This list will be populated through the config. And this list will be used for validation
 given_interface_list: []
+
+#constants used in switch port configuration in access mode
+expected_access_list: [
+     "switchport access vlan {{ item.access.vlan }}",
+     "switchport mode access",
+     "device-tracking attach-policy device-tracking-policy",
+     "no cdp enable",
+     "authentication timer reauthenticate server",
+     "access-session control-direction in",
+     "access-session port-control auto",
+     "mab",
+     "access-session host-mode multi-auth",
+     "dot1x timeout tx-period 30",
+     "dot1x pae authenticator",
+     "dot1x max-reauth-req 3",
+     "spanning-tree portfast",
+     "spanning-tree bpduguard enable",
+     "service-policy type control subscriber PSA_DOT1X_POLICY"
+  ]
+
+expected_trunk_list: [
+     "switchport trunk allowed vlan {{ item.trunk.vlan_range }}",
+     "switchport mode trunk",
+     "cts manual",
+     "policy static sgt 500 trusted",
+     "service-policy type control subscriber PSA_DOT1X_POLICY"
+ ]
