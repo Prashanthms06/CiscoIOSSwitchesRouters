@@ -20,7 +20,6 @@ ansible-playbook cisco_ios.yml -i inventory -e '{
                 "name":"GigabitEthernet1/0/18",
                 "ipv4addr":"10.6.0.1",
                 "ip_mask":"255.255.255.0",
-                "ipv6addr":"2001:df3:bf80:4285:10:152:120:222/64",
                 "description": "Creating via ansible"
                 }
          ]
