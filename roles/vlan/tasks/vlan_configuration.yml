@@ -49,6 +49,5 @@
   when: vlan_result.results[0].item.name != item.name or vlan_result.results[0].item.vlan_id != item.vlan_id
   with_items: "{{ config }}"
 
-- name: "VLANConfiguration: Adding SVI to vlans"
-  include_tasks: vlan_svi_configuration.yml
-  loop: "{{ config }}"
+- debug:
+   msg: "Layer2 configuration successfully configured."

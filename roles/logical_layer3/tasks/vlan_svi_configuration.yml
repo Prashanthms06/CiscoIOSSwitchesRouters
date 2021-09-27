@@ -80,10 +80,12 @@
         - "ipv6 enable"
         - "ipv6 nd prefix {{ ip_details.network }} 2592000 604800 no-autoconfig"
         - "ipv6 nd managed-config-flag"
-        - " ipv6 nd other-config-flag"
+        - "ipv6 nd other-config-flag"
         - "ipv6 nd router-preference High"
         - "no ipv6 redirects"
         - "ospfv3 1 ipv6 area 1"
         - "no shut"
       parents: "interface vlan {{ item.vlan_id }} "
   when: item.ipv6addr is defined
+
+- include_tasks: verify_logical_layer3_configuration.yml

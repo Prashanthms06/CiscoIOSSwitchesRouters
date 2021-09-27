@@ -13,25 +13,9 @@
           "type": "string",
           "description": "Name of the vlan"
         },
-
          "vlan_id": {
           "type": "integer",
           "description": "ID of the vlan"
-        },
-        "ipv4addr": {
-          "type": "string",
-          "description": "Configures the IPv4 address for the vlan",
-          "format": "ip-address"
-        },
-         "ipv6addr": {
-          "type": "string",
-          "description": "Configures the IPv6 address for the vlan",
-          "format": "ip-address"
-        },
-        "ip_mask": {
-           "type": "string",
-           "description": "Configures the ip mask for the vlan",
-           "format": "ip-address"
         },
         "description": {
           "type": "string",
