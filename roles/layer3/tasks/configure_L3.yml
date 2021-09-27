@@ -1,0 +1,64 @@
+#CiscoIOSSwitchesRouters/roles/layer3/tasks/configure_L3.yml
+
+---
+
+- name: "L3_configuration: Creating the description with job id {{ tower_job_id }}"
+  block:
+    - set_fact:
+        ansible_tower_job_id: "{{ TOWER_PREFIX }}_{{ tower_job_id }}"
+
+    - name: "Updating the description"
+      set_fact:
+        updated_desc: "{{ item.description }}::{{ ansible_tower_job_id }}"
+  when: tower_job_id is defined
+
+#For some reasons not able to add the description using ios_vlans module. Hence adding via ios_config
+# we shall be updating the description only when the description is not empty. If empty, then it throws
+#exception of type "incomplete command"
+- set_fact:
+    default_description: "{{ item.description | default(description) }}"
+
+- name: "L3_configuration: Adding description to Layer3 interface {{ item.name }}"
+  ios_config:
+   lines:
+      - "description {{ updated_desc | default(default_description) }}"
+   parents: "interface {{ item.name }} "
+  when: updated_desc is defined or default_description|trim != ""
+
+- name: "L3_configuration: Adding ipv4 {{ item.ipv4addr }} or ipv6 {{ item.ipv6addr }} to Layer3 interface"
+  block:
+    #ip_util module will validate the ipaddress and fetch useful information like network, netmask, hostmask etc
+   - ip_util:
+       ip_address: "{{ item.ipv4addr }}"
+       type: "ipv4"
+
+#   - ip_util:
+#       ip_address: "{{ item.ipv6addr }}"
+#       type: "ipv6"
+
+   - name: "L3_configuration: Validating the ip mask"
+     fail:
+      msg: "Either ip mask is not defined or empty"
+     when: item.ip_mask is not defined or item.ip_mask|trim==""
+
+   - name: "L3_configuration : Setting the ip address {{ item.ipv4addr }} to Layer 3 interface {{ item.name }} "
+     ios_command:
+      commands:
+          - "conf t"
+          - "ip routing"
+          - "interface {{ item.name }}"
+          - "no switchport"
+          - "ip address {{ item.ipv4addr }} {{ item.ip_mask }}"
+          - "no shut"
+          - "end"
+  when: item.ipv4addr is defined
+
+#cat9k#conf t
+#cat9k(config)#ip routing
+#cat9k(config)#interface gigabitEthernet 1/0/9
+#cat9k(config-if)#no switchport
+#cat9k(config-if)#ip address 10.1.1.1 255.255.255.0
+#cat9k(config-if)#ipv6 address 2002:ef4:bf82:4285:20:152:120:224/64
+#cat9k(config-if)#no shut
+
+

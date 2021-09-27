@@ -1,0 +1,41 @@
+   
+{
+  "$id": "https://opensource.com/arrays.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Representation of  Layer-3 interfaces attributes of Cisco IOS/IOS-XE Interfaces.",
+  "type": "array", "minItems": 1,
+  "items": { "$ref": "#/$defs/options" },
+  "$defs": {
+    "options": {
+      "type": "object",
+      "required": [ "name" ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of interface, i.e. Ethernet1/1."
+        },
+        "ipv4addr": {
+          "type": "string",
+          "description": "Configures the IPv4 address for the interface",
+          "format": "ip-address"
+        },
+        "ipv6addr": {
+          "type": "string",
+          "description": "Configures the IPv6 address for the interface",
+          "format": "ip-address"
+        },
+        "ip_mask": {
+           "type": "string",
+           "description": "Configures the ip mask for the interface",
+           "format": "ip-address"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description"
+        }
+      },
+      "additionalProperties": false
+    }
+}
+}
+
