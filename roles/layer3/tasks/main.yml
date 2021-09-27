@@ -1,0 +1,7 @@
+---
+- include_tasks: prelim.yml
+  when: config_type|upper=="LAYER3"
+
+- include_tasks: L3_configuration.yml
+  when: operation|upper=="CREATE"
+  

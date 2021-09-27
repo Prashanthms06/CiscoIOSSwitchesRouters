@@ -1,0 +1,35 @@
+#CiscoIOSSwitchesRouters/roles/layer3/tasks/L3_configuration.yml
+
+---
+- name: "L3_configuration: Creation operation"
+  debug:
+    msg: "Executing create operation for switch port configuration"
+
+- name: "L3_configuration: Ensuring config data conforms to the schema"
+  ansible.utils.validate:
+   data: "{{ config }}"
+   criteria: "{{ lookup( 'ansible.builtin.file', 'L3_interface_schema_creation.json' )}}"
+   engine: ansible.utils.jsonschema
+
+
+#- name: "L3_configuration: Ensuring interfaces names given already exist."
+#  fail:
+#   msg: "Interface name {{ item.name }} doesn't exist"
+#  when: item.name not in interface_list
+#  with_items: "{{ config }}"
+
+
+#- name: "L3_configuration: Pushing the configuration"
+ # ios_l2_interfaces:
+  #  config: "{{ config }}"
+   # state: "merged"
+  #register: result
+
+#- name: "L3_configuration: Dumping the configuration result"
+ # debug:
+  # var: result
+
+- name: "L3_configuration: Adding common properties to all configuration"
+  include_tasks: configure_L3.yml
+  loop: "{{ config }}"
+

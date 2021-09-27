@@ -1,0 +1,31 @@
+#CiscoIOSSwitchesRouters/roles/layer3/tasks/prelim.yml
+
+---
+- name: "L3ConfigurationPrelim: Prelim operation"
+  debug:
+    msg: "Executing prelim operations for L3 configuration"
+
+- name: "L3ConfigurationPrelim: Validating if L3 config is provided or not"
+  fail:
+   msg: "L3 configuration is not provided"
+  when: config is not defined
+
+- include: "../../common/tasks/gather_facts.yml"
+  vars:
+    task_name: "L3ConfigurationPrelim"
+    resources: ["interfaces"]
+
+- name: "L3ConfigurationPrelim: Dumping the results"
+  debug:
+   var: result
+
+- name: "L3ConfigurationPrelim: Building interface list"
+  set_fact:
+   interface_list: "{{ interface_list }} + [ '{{ item.name }}' ]"
+  with_items: "{{ result.ansible_facts.ansible_network_resources.interfaces }}"
+  no_log: True
+
+- name: "L3ConfigurationPrelim: Dumping the interface list"
+  debug:
+   msg: "{{ interface_list }}"
+

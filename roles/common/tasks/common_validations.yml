@@ -29,3 +29,8 @@
   fail:
     msg: "Update operation not yet supported for vlan configuration"
   when: operation|upper=="UPDATE" and config_type|upper=="VLAN_CONFIGURATION"
+
+- name: "L3Validation: Update operation  not yet supported"
+  fail:
+    msg: "Update operation not yet supported for L3 configuration"
+  when: operation|upper=="UPDATE" and config_type|upper=="L3_CONFIGURATION"
