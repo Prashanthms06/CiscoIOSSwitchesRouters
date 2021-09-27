@@ -1,0 +1,28 @@
+---
+- name: "LogicalLayer3Configuration: Prelim operation"
+  debug:
+    msg: "Executing prelim operations for logical layer 3 configuration."
+
+- include: "../../common/tasks/gather_facts.yml"
+  vars:
+    task_name: "LogicalLayer3Configuration"
+    resources: ["vlans"]
+
+- name: "LogicalLayer3Configuration: Dumping the results"
+  debug:
+   var: result
+
+- set_fact:
+    vlan_id_list: []
+    cacheable: True
+- name: "LogicalLayer3Configuration: Building vlan id list"
+  set_fact:
+    #convert the vlan_id to integer while putting into the list
+   vlan_id_list: "{{ vlan_id_list }} + [ '{{ item.vlan_id|int }}' ]"
+  with_items: "{{ result.ansible_facts.ansible_network_resources.vlans }}"
+  no_log: True
+
+- name: "LogicalLayer3Configuration: Dumping the interface list"
+  debug:
+   msg: "{{ vlan_id_list }}"
+

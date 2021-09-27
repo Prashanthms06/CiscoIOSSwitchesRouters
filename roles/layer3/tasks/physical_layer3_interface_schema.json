@@ -8,7 +8,7 @@
   "$defs": {
     "options": {
       "type": "object",
-      "required": [ "name" ],
+      "required": [ "name" ,"ipv4addr","ip_mask"],
       "properties": {
         "name": {
           "type": "string",

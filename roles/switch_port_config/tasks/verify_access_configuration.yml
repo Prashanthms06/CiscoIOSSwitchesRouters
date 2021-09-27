@@ -1,15 +1,28 @@
 ---
-- name: "SwitchPortConfiguration PostCheck: Verifying the switch port access configuration"
+- name: "SwitchPortConfiguration PostCheck: Verifying the switch Port access mode "
   ios_command:
      commands: "show run interface {{ item.name }}"
   register: actual_result
+
+- name: "Dumping actual configuration for access configuration {{ item.name }}"
+  debug:
+    var: actual_result
+
+- name: "Extracting entries"
+  extract:
+   regex: '^\s(.*)'
+   lines: "{{ actual_result.stdout[0] }}"
+  register: interface_configurations
+
+- debug:
+    var: interface_configurations
 
 - set_fact:
     verified_list: []
 
 - set_fact:
     verified_list: "{{ verified_list }} + [  '{{ access_entry }}' ] "
-  when:  access_entry not in actual_result.stdout_lines[0]
+  when:  access_entry not in interface_configurations.result
   loop: "{{ expected_access_list }}"
   loop_control:
     loop_var: access_entry
@@ -22,4 +35,4 @@
   when: verified_list| length>0
 
 - debug:
-    msg: "SwitchPortConfiguration in access mode is successfully verified."
+    msg: "SwitchPortConfiguration in access mode is successfully configured."

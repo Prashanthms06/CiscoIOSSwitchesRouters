@@ -1,0 +1,18 @@
+#CiscoIOSSwitchesRouters/roles/layer3/tasks/L3_configuration.yml
+
+---
+- name: "L3_configuration: Creation operation"
+  debug:
+    msg: "Performing physical layer3 configuration."
+
+- name: "L3_configuration: Ensuring config data conforms to the schema"
+  ansible.utils.validate:
+   data: "{{ config }}"
+   criteria: "{{ lookup( 'ansible.builtin.file', 'physical_layer3_interface_schema.json' )}}"
+   engine: ansible.utils.jsonschema
+
+
+- name: "L3_configuration: Adding common properties to all configuration"
+  include_tasks: configure_physical_layer3.yml
+  loop: "{{ config }}"
+

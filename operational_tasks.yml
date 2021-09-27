@@ -1,16 +1,21 @@
 ---
 
- - name: "Configuring L3"
+ - name: "Configuring physical layer3"
    include_role:
     name: layer3
-   when: config_type|upper=="L3_CONFIGURATION"
+   when: config_type|upper=="PHYSICAL_LAYER3"
+
+ - name: "Configuring logical layer3"
+   include_role:
+     name: logical_layer3
+   when: config_type|upper=="LOGICAL_LAYER3"
 
  - name: "Configuring switch port"
    include_role:
     name: switch_port_config
    when: config_type|upper=="SWITCH_PORT_CONFIGURATION"
 
- - name: "Configuring Vlan"
+ - name: "Configuring Layer2 configuration"
    include_role:
     name: vlan
    when: config_type|upper=="VLAN_CONFIGURATION"
