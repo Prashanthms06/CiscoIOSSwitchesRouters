@@ -1,0 +1,39 @@
+---
+- name: "Fetching acl list {{ item }}"
+  ansible.utils.cli_parse:
+    command: "show access-list {{ item }}"
+    parser:
+      name: ansible.netcommon.native
+      template_path: "{{ role_path }}/tasks/templates/show_access_list.yml"
+  register: access_list_info
+  ignore_errors: true
+
+- debug:
+    msg: "{{ access_list_info}}"
+
+- name: "Extracting list"
+  block:
+    - extract:
+        regex: '^\s(.*)'
+        lines: "{{ access_list_info.stdout }}"
+      register: acl_list_result
+
+    - debug:
+        var: acl_list_result
+
+    - set_fact:
+        final_list: "{{ acl_dict.value | combine({ 'acl_list': acl_list_result.result} ) }}"
+      loop: "{{ access_list_info.parsed | dict2items }}"
+      loop_control:
+        loop_var: acl_dict
+
+    - debug:
+        var: final_list
+
+    - set_fact:
+        combined_acl_list: "{{ combined_acl_list }} + [ {{ final_list }} ]"
+  rescue:
+    - debug:
+        msg: "Continue"
+  when: not access_list_info.failed==True
+
