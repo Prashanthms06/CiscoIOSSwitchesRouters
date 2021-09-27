@@ -10,3 +10,7 @@
 
 - include_tasks: acl_deletion.yml
   when: operation|upper=="DELETE"
+
+# Tasks to fetch all the acl checks from a given device
+- include_tasks: acl_checks.yml
+  when: operation|upper=="GET"
