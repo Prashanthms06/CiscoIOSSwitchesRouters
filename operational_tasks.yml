@@ -2,7 +2,7 @@
 
  - name: "Configuring physical layer3"
    include_role:
-    name: layer3
+    name: physical_layer3
    when: config_type|upper=="PHYSICAL_LAYER3"
 
  - name: "Configuring logical layer3"

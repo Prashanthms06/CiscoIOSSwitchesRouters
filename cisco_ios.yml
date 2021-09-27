@@ -1,5 +1,5 @@
   - hosts:
-      - all
+      - cisco
     gather_facts: no
     roles:
       - role: common
