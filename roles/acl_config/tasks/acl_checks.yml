@@ -44,8 +44,8 @@
 
 - name: creating unique ID
   set_fact:
-      unique_id: lookup('community.general.random_string')
-
+      unique_id: "{{lookup('community.general.random_string')}}"
+      cacheable: True
 - name: zipping adding password to reports
   shell: zip --password pass123 {{ unique_id }}.zip reports/*
 
