@@ -40,3 +40,21 @@
   copy:
    src: "./templates/psa_banner.jpeg"
    dest: "reports"
+
+
+- name: creating unique ID
+  set_fact:
+      unique_id: lookup('community.general.random_string')
+
+- name: zipping adding password to reports
+  shell: zip --password pass123 {{ unique_id }}.zip reports/*
+
+- name: sending mail
+  mail:
+    subject: Ansible-report
+    body: Hello, this is ios acl report ;-)
+    to: Prashanth <pras@ansible-srv>
+    attach: "{{ unique_id }}.zip"
+  delegate_to: localhost
+  #
+
