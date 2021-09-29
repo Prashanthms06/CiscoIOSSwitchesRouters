@@ -5,6 +5,10 @@
       - role: common
 
     tasks:
+      - name: Read in parse_genie role
+        include_role:
+          name: clay584.parse_genie
+
       - include_tasks: operational_tasks.yml
         when: operation|upper in crud_operations
 

@@ -1,9 +1,15 @@
 ---
 ansible_network_os: ios
 ansible_connection: network_cli
-supported_config_types: ["SWITCH_PORT_CONFIGURATION","VLAN_CONFIGURATION","AUDIT","ACL","PHYSICAL_LAYER3","LOGICAL_LAYER3"]
+supported_config_types: ["SWITCH_PORT_CONFIGURATION",
+                         "VLAN_CONFIGURATION",
+                         "AUDIT",
+                         "ACL",
+                         "PHYSICAL_LAYER3",
+                         "LOGICAL_LAYER3",
+                         "UPGRADE"]
 crud_operations: ["CREATE","UPDATE","DELETE","GET"]
-non_crud_operations: ["AUDIT"]
+non_crud_operations: ["AUDIT","UPGRADE"]
 supported_operation_types: "{{ crud_operations + non_crud_operations }}"
 description:
 TOWER_PREFIX: TID

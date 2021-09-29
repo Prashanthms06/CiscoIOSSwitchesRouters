@@ -1,0 +1,3 @@
+<group name="flash_size" >
+{{ available_bytes }} bytes available ({{ used }} bytes used)
+</group>

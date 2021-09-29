@@ -1,0 +1,6 @@
+<group name="access_list" >
+access-list {{ seq_num }} {{ grant }} {{ src_ip }} {{ src_mask_bits | ORPHRASE }}
+</group>
+
+<group name="aaa_auth" >
+</group>
