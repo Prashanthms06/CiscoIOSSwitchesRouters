@@ -1,6 +1,7 @@
 [Main Menu](../README.md)
 # Switch Base ACL Configuration
 
+## ACL Creation
 Command to switch base acl in standard mode
 
 ```shell
@@ -45,6 +46,7 @@ ansible-playbook cisco_ios.yml -i inventory -e \
 }'
 ```
 
+## ACL Deletion
 Command to switch base acl deletion in standard mode when delete all is yes
 
 
@@ -114,3 +116,18 @@ ansible-playbook cisco_ios.yml -i hosts -e \
 "direction": "out"
 }'
 ````
+
+
+## ACL Checks/Report
+Command to generarting ACL report
+```shell
+ansible-playbook cisco_ios.yml -i inventory -e \  
+'{                               
+"config_type":"acl", 
+"operation":"get",                                                                         
+"acl_list": [                                                                                                       
+"1","2","NamedACL"                                   
+]                                      
+}'
+```
+                                        

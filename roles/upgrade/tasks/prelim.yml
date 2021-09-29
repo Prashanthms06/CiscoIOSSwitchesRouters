@@ -1,0 +1,8 @@
+---
+- fail:
+   msg: "Older version of the device is either not defined or is empty"
+  when: old_fw_version is not defined or old_fw_version|trim==""
+
+- fail:
+    msg: "Either the upgraded firmware version file path is not provided or is empty"
+  when: upgraded_fw_name is not defined or upgraded_fw_name|trim==""

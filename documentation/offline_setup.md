@@ -10,6 +10,16 @@ The following softwares are present under downloads folder:
 |jsonschema|3.2.0|
 |paramiko||
 
+```shell
+pip3 install genie
+pip3 install pyats
+pip3 install ttp
+pip3 install scp
+
+ansible-galaxy install clay584.parse_genie
+
+```
+
 
 Install the software as per below given order:
 

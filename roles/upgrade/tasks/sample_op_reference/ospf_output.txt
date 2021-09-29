@@ -1,0 +1,47 @@
+          OSPFv3 1 address-family ipv4 (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:32    103             Vlan443
+10.180.225.1      0   FULL/  -        00:00:38    107             Vlan447
+
+          OSPFv3 1 address-family ipv6 (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:38    103             Vlan443
+10.180.225.1      0   FULL/  -        00:00:38    107             Vlan447
+
+          OSPFv3 1 address-family ipv4 vrf vrf-comm (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:35    104             Vlan444
+10.180.225.1      0   FULL/  -        00:00:35    108             Vlan448
+
+          OSPFv3 1 address-family ipv6 vrf vrf-comm (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:39    104             Vlan444
+10.180.225.1      0   FULL/  -        00:00:34    108             Vlan448
+
+          OSPFv3 1 address-family ipv4 vrf vrf-gs (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:39    102             Vlan442
+10.180.225.1      0   FULL/  -        00:00:39    106             Vlan446
+
+          OSPFv3 1 address-family ipv6 vrf vrf-gs (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:36    102             Vlan442
+10.180.225.1      0   FULL/  -        00:00:37    106             Vlan446
+
+          OSPFv3 1 address-family ipv4 vrf vrf-ss (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:39    101             Vlan441
+10.180.225.1      0   FULL/  -        00:00:38    105             Vlan445
+
+          OSPFv3 1 address-family ipv6 vrf vrf-ss (router-id 10.180.225.102)
+
+Neighbor ID     Pri   State           Dead Time   Interface ID    Interface
+10.180.225.2      0   FULL/  -        00:00:37    101             Vlan441
+10.180.225.1      0   FULL/  -        00:00:37    105             Vlan445

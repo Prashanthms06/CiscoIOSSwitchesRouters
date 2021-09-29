@@ -4,3 +4,8 @@
    include_role:
     name: audit
    when: config_type|upper=="AUDIT"
+
+ - name: "Performing upgrade"
+   include_role:
+     name: upgrade
+   when: config_type|upper=="UPGRADE"

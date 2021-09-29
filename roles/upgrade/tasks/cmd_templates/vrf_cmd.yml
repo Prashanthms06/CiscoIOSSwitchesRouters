@@ -1,0 +1,15 @@
+---
+parse_genie:
+  ios:
+    "show ip vrf int":
+      headers:
+        - - Interface
+          - IP-Address
+          - VRF
+          - Protocol
+        - - ''
+          - ''
+          - ''
+          - ''
+      index:
+        - 0

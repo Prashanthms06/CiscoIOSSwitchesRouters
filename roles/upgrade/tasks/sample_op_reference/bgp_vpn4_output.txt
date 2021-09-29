@@ -1,0 +1,22 @@
+BGP router identifier 10.180.225.1, local AS number 64838
+BGP table version is 1890, main routing table version 1890
+377 network entries using 96512 bytes of memory
+754 path entries using 102544 bytes of memory
+40/20 BGP path/bestpath attribute entries using 12160 bytes of memory
+13 BGP AS-PATH entries using 520 bytes of memory
+1 BGP extended community entries using 40 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 211776 total bytes of memory
+BGP activity 1067/244 prefixes, 5239/3592 paths, scan interval 60 secs
+384 networks peaked at 11:14:07 Sep 27 2021 SGP (2d00h ago)
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.180.232.130  4        64820    4961    5006     1890    0    0 3d03h           1
+10.180.232.134  4        64820    5000    5082     1890    0    0 3d03h          15
+10.180.232.142  4        64820    4966    5079     1890    0    0 3d03h           1
+10.180.232.146  4        64820    4960    5013     1890    0    0 3d03h           1
+10.180.232.150  4        64820    5081    5073     1890    0    0 3d03h         112
+10.180.232.178  4        64838    4208    4218     1890    0    0 2d14h         142
+10.180.232.182  4        64838    4185    4184     1890    0    0 2d14h          62
+10.180.232.190  4        64838    4183    4178     1890    0    0 2d14h         173

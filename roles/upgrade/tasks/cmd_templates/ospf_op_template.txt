@@ -1,0 +1,3 @@
+<group name="ospf" >
+{{ neigbour_id }}      {{ pri }}   FULL/  -      {{ dead_time }}   {{ int_id }}             {{ int }}
+</group>

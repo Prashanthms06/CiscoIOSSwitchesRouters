@@ -1,0 +1,200 @@
+---
+### show file systems
+- ios_command:
+    commands:
+      - "show flash:"
+  register: flash_info
+
+- set_fact:
+    diskspace_template_path: "{{ role_path }}/tasks/cmd_templates/diskspace.txt"
+
+- name: "{{ task }}: Fetching available diskspace in flash"
+  set_fact:
+   "{{ flash_var_name }}": "{{ flash_info.stdout[0] | parse_cli_ttp(diskspace_template_path) }}"
+
+- name: "{{ task }}: Dumping the available diskspace in flash"
+  debug:
+    var: "{{ flash_var_name }}"
+
+#########show version
+- name: "{{ task }}: Fetching device version information"
+  ios_command:
+    commands:
+      - "show version"
+  register: version_info
+
+- name: "{{ task }}: Fetch device version info"
+  set_fact:
+    "{{ version_var_name }}": "{{ version_info.stdout[0] | parse_genie(command='show version', os='iosxe') }}"
+  delegate_to: localhost
+
+- name: "{{ task }}: Dumping device version information"
+  debug:
+    var: "{{ version_var_name }}"
+
+#########show int status
+- name: "{{ task }}: Fetching interfaces and their status"
+  ios_command:
+    commands:
+      - "show int status"
+  register: interfaces_status_info
+
+- name: "{{ task }}: Fetch interface status list"
+  set_fact:
+    "{{ interface_var_name }}": "{{ interfaces_status_info.stdout[0] | parse_genie(command='show int status', os='iosxe') }}"
+  delegate_to: localhost
+
+- name: "{{ task }}: Dumping interfaces"
+  debug:
+    var: "{{ interface_var_name }}"
+
+#########show cdp nei
+
+- name: "{{ task }}: Fetching cdp neighbours"
+  ios_command:
+    commands:
+      - "show cdp nei"
+  register: cdp_info
+
+- name: "{{ task }}: Fetch cdp neighbours"
+  set_fact:
+    "{{ cdp_var_name }}": "{{ cdp_info.stdout[0] | parse_genie(command='show cdp neighbors', os='iosxe') }}"
+  delegate_to: localhost
+  ignore_errors: True
+  #Ignoring the errors if the cdp is disabled
+
+- name: "{{ task }}: Dumping cdp neighbours"
+  debug:
+    var: "{{ cdp_var_name }}"
+
+#################show etherchannel summary
+- name: "{{ task }}: Fetching etherchannel summary"
+  ios_command:
+    commands:
+      - "show etherchannel summary"
+  register: ether_info
+
+- name: "{{ task }}: Fetch etherchannel summary"
+  set_fact:
+    "{{ ether_var_name }}": "{{ ether_info.stdout[0] | parse_genie(command='show etherchannel summary', os='iosxe') }}"
+  delegate_to: localhost
+
+- name: "{{ task }}: Dumping etherchannel summary"
+  debug:
+    var: "{{ ether_var_name }}"
+
+#########show ip bgp summary
+
+- name: "{{ task }}: Fetching ip bgp summary"
+  ios_command:
+    commands:
+      - "show ip bgp summary"
+  register: bgp_info
+
+- name: "{{ task }}: Fetch bgp summary"
+  set_fact:
+    "{{ bgp_var_name }}": "{{ bgp_info.stdout[0] | parse_genie(command='show bgp summary', os='ios') }}"
+  delegate_to: localhost
+  ignore_errors: True
+  #Ignoring the errors if the cdp is disabled
+
+- name: "{{ task }}: Dumping bgp summary"
+  debug:
+    var: "{{ bgp_var_name }}"
+
+
+#### show bgp vpnv4 unicast all summary
+- name: "{{ task }}: Fetching bgp vrf summary"
+  ios_command:
+    commands:
+      - "show bgp vpnv4 unicast all summary"
+  register: bgp_vrf_info
+
+- name: "{{ task }}: Fetch bgp vpn4 summary"
+  set_fact:
+    "{{ bgp_vrf_var_name }}": "{{ bgp_vrf_info.stdout[0] | parse_genie(command='show bgp summary', os='iosxe') }}"
+  delegate_to: localhost
+  ignore_errors: True
+  #Ignoring the errors if the cdp is disabled
+
+- name: "{{ task }}: Dumping bgp vrf summary"
+  debug:
+    var: "{{ bgp_vrf_var_name }}"
+
+####show ospfv3 vrf * nei
+
+- name: "{{ task }}: Fetching ospfv3 information"
+  ios_command:
+    commands:
+      - "show ospfv3 vrf * nei"
+  register: ospf_info
+
+- set_fact:
+    ospf_template_path: "{{ role_path }}/tasks/cmd_templates/ospf_op_template.txt"
+
+- name: "{{ task }}: Fetch ospfv3 summary"
+  set_fact:
+    "{{ ospf_var_name }}": "{{ ospf_info.stdout[0] | parse_cli_ttp(ospf_template_path) }}"
+  delegate_to: localhost
+  ignore_errors: True
+  #Ignoring the errors if the cdp is disabled
+
+- name: "{{ task }}: Dumping ospfv3  summary"
+  debug:
+    var: "{{ ospf_var_name }}"
+
+#########show ip int brief
+
+- name: "{{ task }}: Fetching Layer3 interface status"
+  ios_command:
+    commands:
+      - "show ip int brief"
+  register: layer3_info
+
+- name: "{{ task }}: Fetch layer3 interface status"
+  set_fact:
+    "{{ layer3_var_name }}": "{{ layer3_info.stdout[0] | parse_genie(command='show ip int brief', os='iosxe') }}"
+  delegate_to: localhost
+  ignore_errors: True
+  #Ignoring the errors if the cdp is disabled
+
+- name: "{{ task }}: Dumping layer3 interface status"
+  debug:
+    var: "{{ layer3_var_name }}"
+
+######show ip vrf int
+
+- name: Include vars file with generic command metadata
+  include_vars:
+    file: cmd_templates/vrf_cmd.yml
+    name: parse_genie
+
+- name: "{{ task }}: Fetching vrf summary"
+  ios_command:
+    commands:
+      - "show ip vrf int"
+  register: vrf_info
+
+
+- name: "{{ task }}: Fetch layer3 interface status"
+  set_fact:
+    "{{ vrf_var_name }}": "{{ vrf_info.stdout[0] | parse_genie(command='show ip vrf int', os='ios', generic_tabular=True, generic_tabular_metadata=parse_genie) }}"
+  delegate_to: localhost
+  ignore_errors: True
+  #Ignoring the errors if the cdp is disabled
+
+- name: "{{ task }}: Dumping vrf interface status"
+  debug:
+    var: "{{ vrf_var_name }}"
+
+###### show running-config
+- ios_command:
+   commands: "show running-config"
+  register: run_cfg_info
+
+- set_fact:
+    "{{ run_cfg_var_name }}": "{{ run_cfg_info.stdout[0] }}"
+
+- debug:
+   var: "{{ run_cfg_var_name }}"
+
