@@ -14,11 +14,21 @@
     msg: "{{ item }}"
   loop: "{{ lookup('inventory_hostnames', 'all', wantlist=True) }}"
 
+- name: generating dir name by the name of date
+  set_fact:
+      curr_date: "{{lookup('pipe','date \"+%Y-%m-%d \"')}}"
+- name: creating UUID
+  generate_uuid:
+  register: uuid
+- name: print uuid
+  debug:
+    var: uuid
+
 - name: Create reports/ folder to save reports
   run_once: yes
   local_action:
     module: file
-    path: "./reports"
+    path: "./reports/{{ curr_date }}/{{ uuid.uuid }}"
     state: directory
 
 #Setting the facts for generating the HTML report
@@ -32,29 +42,24 @@
   run_once: yes
   template:
    src: "./templates/acl_report.j2"
-   dest: "reports/report.html"
+   dest: "reports/{{ curr_date }}/{{ uuid.uuid }}/report.html"
 
 - name: Generate job report
   delegate_to: 127.0.0.1
   run_once: yes
   copy:
    src: "./templates/psa_banner.jpeg"
-   dest: "reports"
+   dest: "reports/{{ curr_date }}/{{ uuid.uuid }}"
 
-
-- name: creating unique ID
-  set_fact:
-      unique_id: "{{lookup('community.general.random_string')}}"
-      cacheable: True
 - name: zipping adding password to reports
-  shell: zip --password pass123 {{ unique_id }}.zip reports/*
+  shell: zip --password pass123 reports/{{ curr_date }}/{{ uuid.uuid }}/{{ uuid.uuid }}.zip reports/{{ curr_date }}/{{ uuid.uuid }}/*
 
 - name: sending mail
   mail:
     subject: Ansible-report
     body: Hello, this is ios acl report ;-)
     to: Prashanth <pras@ansible-srv>
-    attach: "{{ unique_id }}.zip"
+    attach: "reports/{{ curr_date }}/{{ uuid.uuid }}/{{ uuid.uuid }}.zip"
   delegate_to: localhost
   #
 
