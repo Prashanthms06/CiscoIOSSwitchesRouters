@@ -1,0 +1,33 @@
+
+- fail:
+    msg: "Either the password for zip folder is provided or is empty"
+  when: zip_passwd is not defined or zip_passwd|trim==""
+
+- fail:
+   "msg" : "Either the variable send_email is not defined or doesn't have valid values. Supported values are {{ valid_email_prompts }}"
+  when: send_email is not defined or send_email not in valid_user_prompts
+
+
+- name: "validating email prompts"
+  block:
+
+    - fail:
+       msg: "Either the destination field is not present or is empty"
+      when: to_mail_id is not defined or to_mail_id|trim==""
+
+    - fail:
+       msg: "Either the destination masking bits is not present or is empty"
+      when: smtp_srv is not defined or smtp_srv|trim==""
+
+    - fail:
+       msg: "Either the smtp user name is not present or is empty"
+      when: smtp_user is not defined or smtp_user|trim==""
+
+    - fail:
+        msg: "Either the smtp user password  is not present or is empty"
+      when: smtp_user_passwd is not defined or smtp_user_passwd|trim==""
+
+  when: send_email=="yes"
+
+
+
