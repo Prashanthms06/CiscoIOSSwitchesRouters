@@ -11,19 +11,21 @@
     #title: "{{ title }}"
     curr_date: "{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
 
-- name: generating dir name by the name of date
+- name: "ReportGeneration: Creating today's date directory"
   set_fact:
       dir_date: "{{lookup('pipe','date \"+%Y-%m-%d \"')}}"
-- name: Generating UUID
+- name: "ReportGeneration: Generating UUID for the ACL report."
   generate_uuid:
   register: uuid
 
-### Set the UUID of the path and use that as destination
 - set_fact:
-    #current_report_folder: "{{ reports_root_folder }}"
-    #current_report_folder: "{{ reports_root_folder }}/<DateTime>/<UUID>"
    current_report_folder: "{{ reports_root_folder }}/{{ dir_date }}/{{ uuid.uuid }}"
    zip_path: "{{ reports_root_folder }}/{{ dir_date }}"
+
+- name: "ReportGeneration: Creating folder to save the reports"
+  file:
+    path: "{{ current_report_folder }}"
+    state: directory
 
 - debug:
     msg: "Report {{ title }} is going to saved under {{ current_report_folder }}"
@@ -46,16 +48,16 @@
   delegate_to: 127.0.0.1
   run_once: yes
   copy:
-    src: "javascript_lib/*"
+    src: "javascript_lib/"
     dest: "{{ current_report_folder }}"
 
-- name: adding password to reports
+- name: "ReportGeneration: Zipping the reports"
   delegate_to: 127.0.0.1
-  shell: zip --password {{ zip_passwd }} {{ zip_path }}/{{ uuid.uuid }}.zip {{ current_report_folder }}/*
+  shell: zip -r --password {{ zip_passwd }} {{ zip_path }}/{{ uuid.uuid }}.zip {{ current_report_folder }}/*
+  no_log: yes
 
-- name: sending mail
-  block
-    mail:
+- name: "ReportGeneration: Attaching and sending the reports via email"
+  mail:
       host: "{{ smtp_srv }}"
       port: 587
       username: "{{ smtp_user }}"
@@ -64,8 +66,8 @@
       body: Hello, this is ios acl report ;-)
       to: "{{ to_email_id }}"
       attach: "{{ zip_path }}/{{ uuid.uuid }}.zip"
-    delegate_to: localhost
+  delegate_to: localhost
+  ignore_errors: yes
   when: send_email=="yes"
 
 
-###zip the current report folder and email.
