@@ -1,0 +1,10 @@
+
+<group name="md5" >
+%Error verifying flash:{{ file_name | let("verified",false) }}
+Computed signature  = {{ actual }}
+Submitted signature = {{ expected }}
+</group>
+
+<group name="md5">
+Verified (flash:{{ file_name | let("verified",true) }}) = {{ expected }}
+</group>

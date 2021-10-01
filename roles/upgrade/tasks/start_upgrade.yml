@@ -32,4 +32,5 @@
      delay: 90
      timeout: 900
   delegate_to: localhost
+  register: online_status
 
