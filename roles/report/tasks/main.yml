@@ -11,10 +11,19 @@
     #title: "{{ title }}"
     curr_date: "{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
 
+- name: generating dir name by the name of date
+  set_fact:
+      dir_date: "{{lookup('pipe','date \"+%Y-%m-%d \"')}}"
+- name: Generating UUID
+  generate_uuid:
+  register: uuid
+
 ### Set the UUID of the path and use that as destination
 - set_fact:
-    current_report_folder: "{{ reports_root_folder }}"
+    #current_report_folder: "{{ reports_root_folder }}"
     #current_report_folder: "{{ reports_root_folder }}/<DateTime>/<UUID>"
+   current_report_folder: "{{ reports_root_folder }}/{{ dir_date }}/{{ uuid.uuid }}"
+   zip_path: "{{ reports_root_folder }}/{{ dir_date }}"
 
 - debug:
     msg: "Report {{ title }} is going to saved under {{ current_report_folder }}"
@@ -39,6 +48,24 @@
   copy:
     src: "javascript_lib/*"
     dest: "{{ current_report_folder }}"
+
+- name: adding password to reports
+  delegate_to: 127.0.0.1
+  shell: zip --password {{ zip_passwd }} {{ zip_path }}/{{ uuid.uuid }}.zip {{ current_report_folder }}/*
+
+- name: sending mail
+  block
+    mail:
+      host: "{{ smtp_srv }}"
+      port: 587
+      username: "{{ smtp_user }}"
+      password: "{{ smtp_usr_passwd }}"
+      subject: Ansible-report
+      body: Hello, this is ios acl report ;-)
+      to: "{{ to_email_id }}"
+      attach: "{{ zip_path }}/{{ uuid.uuid }}.zip"
+    delegate_to: localhost
+  when: send_email=="yes"
 
 
 ###zip the current report folder and email.

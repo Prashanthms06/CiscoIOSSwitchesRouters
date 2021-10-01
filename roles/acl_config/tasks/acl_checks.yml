@@ -11,6 +11,7 @@
    var: combined_acl_list
 
 # now time to generate report
+
 - include_role: report
   vars:
     - report_template_name: "acl_report.j2"
