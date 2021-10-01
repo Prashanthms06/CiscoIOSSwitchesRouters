@@ -4,5 +4,17 @@
   when: old_fw_version is not defined or old_fw_version|trim==""
 
 - fail:
-    msg: "Either the upgraded firmware version file path is not provided or is empty"
+    msg: "Either the upgraded firmware version name is not provided or is empty"
   when: upgraded_fw_name is not defined or upgraded_fw_name|trim==""
+
+- name : "Check if the firmware version file {{ upgraded_fw_name }} is present or not under the {{ ios_fw_folder }} "
+  stat:
+   path: "{{ ios_fw_folder }}/{{ upgraded_fw_name }}"
+  register: upgrade_file_info
+
+- debug:
+    var: upgrade_file_info
+
+- fail:
+   msg: "Firmware version file {{ upgraded_fw_name }} doesn't exist under {{ ios_fw_folder }} location. "
+  when: upgrade_file_info.stat.exists==false

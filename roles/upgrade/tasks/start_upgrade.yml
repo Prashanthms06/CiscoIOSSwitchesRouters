@@ -12,45 +12,25 @@
 # aaa authorization commands 0 default local
 #aaa authorization commands 1 default local
 #aaa authorization commands 15 default local
-- name: Save running config
+- name: "Upgrade: Save running config"
   ios_config:
      save_when: always
 
-- debug:
-   msg: "Starting the upgrade"
 - name: "Upgrade: Starting to upgrade"
-  ios_command:
-    commands:
-      - "conf t"
-      - "boot system flash:cat9k_iosxe.17.03.03.SPA.bin"
-      #-  command: "install add file bootflash:cat9k_iosxe.17.03.03.SPA.bin activate commit"
-         #prompt: 'Press Quit(q) to exit, you may save configuration and re-enter the command. [y/n/q]'
-         #answer: 'y'
-         #prompt: 'This operation may require a reload of the system. Do you want to proceed? \[y/n\]'
-         #answer: 'y'
+  ios_upgrade:
+    command: 'install add file bootflash:{{ upgraded_fw_name }} activate commit'
+  register: pre_reload_op
 
-- name: Reload the Device
-  ios_command:
-     commands:
-       - command: "reload"
-         prompt: 'Proceed with reload? \[confirm\]'
-         answer: 'y'
+- name: "Upgrade:Dumping the output of device before reload"
+  debug:
+   var: pre_reload_op
 
-- debug:
-    var: result
-
-- name: Wait for device to come back online
+- name: "Upgrade: Waiting for the device to come back online"
   wait_for:
      host: "{{ inventory_hostname }}"
      port: 22
      delay: 90
      timeout: 900
-
   delegate_to: localhost
-#- name: 'Check if the upgrade process is completed or not '
-#  async_status:
-#    jid: "{{ upgrade_sleeper.ansible_job_id }}"
-#  register: job_result
-#  until: job_result.finished
-#  retries: 900
-#  delay: 30
+  register: online_status
+

@@ -1,3 +1,54 @@
 ---
 - debug:
    msg: "Post upgrade verification"
+
+- include_tasks: collect_device_information.yml
+  vars:
+    - task: "PostUpgrade"
+    - flash_var_name: "post_disk_space"
+    - version_var_name: "new_version"
+    - interface_var_name: "post_interface_list"
+    - cdp_var_name: "post_cdp"
+    - ether_var_name: "post_ether_summary"
+    - bgp_var_name: "post_bgp_summary"
+    - layer3_var_name: "post_layer3_summary"
+    - vrf_var_name: "post_vrf_int_summary"
+    - run_cfg_var_name: "post_run_cfg"
+    - bgp_vrf_var_name: "post_bgp_vrf_summary"
+    - ospf_var_name: "post_ospf_summary"
+    - fs_var_name: "post_fs_info"
+
+- debug:
+     msg: "Device has been upgraded from {{ oldversion.version }} to {{ new_version.version }}"
+
+# We will not fail the task if the device has not been upgraded to the newer version.
+
+
+- set_fact:
+     version_diff: "{{ old_version | compare_dict(new_version,'version') }}"
+     interface_status_diff: "{{ pre_interface_list | compare_dict(post_interface_list,'int_status') }}"
+     ether_summary_diff: "{{ pre_ether_summary | compare_dict(post_ether_summary,'ether_summary') }}"
+     layer3_summary_diff: "{{ pre_layer3_summary | compare_dict(post_layer3_summary,'layer3_summary') }}"
+     vrf_summary_diff: "{{ pre_vrf_int_summary | compare_dict(post_vrf_int_summary,'vrf_summary') }}"
+     running_cfg_diff: "{{ pre_run_cfg | compare_dict(post_run_cfg,'running_cfg') }}"
+
+
+#bgp, cdp and ospf may or may not be present. Hence calling their difference separately
+
+- set_fact:
+     bgp_summary_diff:  "{{ pre_bgp_summary | compare_dict(post_bgp_summary,'bgp_summary') }}"
+  when: pre_bgp_summary is defined and post_bgp_summary is defined
+
+
+- set_fact:
+    cdp_diff:  "{{ pre_cdp | compare_dict(post_cdp,'cdp') }}"
+  when: pre_cdp is defined and post_cdp is defined
+
+- set_fact:
+    bgp_vrf_diff:  "{{ pre_bgp_vrf_summary | compare_dict(post_bgp_vrf_summary,'bgp_vrf_summary') }}"
+  when: pre_bgp_vrf_summary is defined and post_bgp_vrf_summary is defined
+
+- set_fact:
+   ospf_diff: "{{ pre_ospf_summary | compare_dict(post_ospf_summary,'ospf_summary') }}"
+  when: pre_ospf_summary is defined and post_ospf_summary is defined
+

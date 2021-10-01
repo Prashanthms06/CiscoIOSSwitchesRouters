@@ -1,0 +1,110 @@
+---
+- include_tasks: collect_device_information.yml
+  vars:
+    - task: "PreUpgrade"
+    - flash_var_name: "pre_disk_space"
+    - version_var_name: "old_version"
+    - interface_var_name: "pre_interface_list"
+    - cdp_var_name: "pre_cdp"
+    - ether_var_name: "pre_ether_summary"
+    - bgp_var_name: "pre_bgp_summary"
+    - layer3_var_name: "pre_layer3_summary"
+    - vrf_var_name: "pre_vrf_int_summary"
+    - run_cfg_var_name: "pre_run_cfg"
+    - bgp_vrf_var_name: "pre_bgp_vrf_summary"
+    - ospf_var_name: "pre_ospf_summary"
+    - fs_var_name: "pre_fs_info"
+#
+#
+#
+#Compare the older version as well and fail if they are not matching
+- fail:
+    msg: "The older firmware version {{ old_fw_version }} provided doesn't match with the system's firmware version {{ old_version.version }}"
+  when: not old_fw_version==old_version.version
+
+- fail:
+   msg: "Device doesn't have enough space to upload the file. Size of the file {{ upgrade_file_info.stat.size }} and available bytes {{ pre_disk_space[0].flash_size.available_bytes }} "
+  when: upgrade_file_info.stat.size|int > pre_disk_space[0].flash_size.available_bytes|int
+
+- debug:
+   msg: "Enabling the scp"
+
+- ios_command:
+    commands:
+      - "conf t"
+      - "ip scp server enable"
+
+- debug:
+    msg: "Copying the file {{ upgraded_fw_name }} to the device"
+
+
+#Firmware path on the device
+- set_fact:
+    fw_path_on_device: "flash:{{ upgraded_fw_name }}"
+
+- name: "PreUpgrade: Copying {{ upgraded_fw_name }} to device"
+  command: "sshpass -p {{ ansible_ssh_pass }} scp {{ ios_fw_folder }}/{{ upgraded_fw_name }} {{ ansible_ssh_user }}@{{ inventory_hostname }}:{{ fw_path_on_device }}"
+  async: 3600
+  poll: 0
+  register: copy_sleeper
+#
+- name: 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
+  block:
+    - name : 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
+      async_status:
+       jid: "{{ copy_sleeper.ansible_job_id }}"
+     register: copy_result
+     until: copy_result.finished
+     retries: 3600
+     delay: 60
+  # using always block, so that irrespective of of whether the above task has failed or not, we need to disable the
+  #scp on the device
+  always:
+    - name:  'PreUpgrade: Disabling the scp on the device'
+      ios_command:
+        commands:
+          - "conf t"
+          - "no ip scp server enable"
+
+- name: "PreUpgrade: Dumping the status of copy command"
+  debug:
+   var: copy_result
+
+# we need to fail this job if the copy has failed
+- fail:
+   msg: "Unable to copy the firmware file {{ upgraded_fw_name }} to the device"
+  when: not copy_result.finished
+
+- debug:
+    msg: "Successfully copied  the firmware file {{ upgraded_fw_name }} to the device"
+
+
+- debug:
+    msg: "Verifying the MD5 hash"
+
+- ios_command:
+    commands:
+      - "verify /md5 {{ fw_path_on_device }} {{ fw_md5 }}"
+  vars:
+    #Command timeout of 10min
+    ansible_command_timeout: 600
+  register: md5_output
+
+- set_fact:
+    md5_template_path: "{{ role_path }}/tasks/cmd_templates/md5_output.txt"
+
+- name: "PreUpgrade: Parsing the md5 command output "
+  set_fact:
+   mdf_parsed_op: "{{ flash_info.stdout[0] | parse_cli_ttp(md5_template_path) }}"
+
+- name: "PreUpgrade: Dumping the md5 parsed output"
+  debug:
+    var: "{{ mdf_parsed_op }}"
+
+- fail:
+    msg: "MD5 verfication of the file {{ upgraded_fw_name }} has failed on the device.Computed MD5 value is  {{ mdf_parsed_op[0].md5.actual }} and submitted MD5 is {{ mdf_parsed_op[0].md5.actual.expected }}"
+  when: not mdf_parsed_op[0].md5.verified
+
+- debug:
+    msg: "MD5 value of the file {{ upgraded_fw_name }} is successfully verified."
+
