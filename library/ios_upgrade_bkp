@@ -1,0 +1,92 @@
+
+from ansible.module_utils.basic import AnsibleModule
+
+import traceback
+import re
+import paramiko
+from paramiko_expect import SSHClientInteraction
+
+def check_if_config(output):
+    config_regex = r"System configuration has been modified"
+    if re.search(config_regex, output, re.MULTILINE):
+        return True
+    else:
+        return False
+def check_if_reload(output):
+    config_regex = r"Image added"
+    if re.search(config_regex, output, re.MULTILINE):
+        return True
+    else:
+        return False
+
+def main():
+    module = AnsibleModule(
+        supports_check_mode=True,
+        argument_spec=dict(
+            command=dict(required=True)
+        )
+    )
+    command = module.params['command']
+
+    PROMPT = '(.*)#$'
+
+    response = dict(
+        changed=False,
+        output=''
+    )
+    result=[]
+    try:
+        client = paramiko.SSHClient()
+
+        # Set SSH key parameters to auto accept unknown hosts
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # Connect to the host
+        client.connect(hostname=ansible_hostname, username=ansible_ssh_user, password=ansible_ssh_pass)
+
+        # Create a client interaction class which will interact with the host
+        with SSHClientInteraction(client, timeout=3600, display=True) as interact:
+            interact.expect(PROMPT)
+
+            # Run the first command and capture the cleaned output, if you want
+            # the output without cleaning, simply grab current_output instead.
+            interact.send('install add file bootflash:cat9k_iosxe.17.03.03.SPA.bin activate commit')
+            save_config_prompt = 'Press Quit\(q\) to exit, you may save configuration and re-enter the command. \[y/n/q\]'
+            reload_config_prompt = 'This operation may require a reload of the system. Do you want to proceed? \[y/n\]'
+            # interact.
+            # we need to expect either for the prompt or for configuration quit or for reload
+            interact.expect([PROMPT, save_config_prompt, reload_config_prompt])
+            cmd_output = interact.current_output_clean
+            # the cmd_output will not consist of actual prompt. We need to check the previous outputs
+            # and verify if it is indeed the prompt we are expecting
+
+            if check_if_config(cmd_output):
+                interact.send('y')
+                interact.expect([PROMPT, reload_config_prompt])
+                if check_if_reload(cmd_output):
+                    interact.send('y')
+                    # after this device will be unreachable as device will restart
+            elif check_if_reload(cmd_output):
+                interact.send('y')
+                # after this device will be unreachable as device will restart
+            else:
+                print("Command completed. Returned to prompt")
+
+
+    except Exception as e:
+        module.fail_json(msg="Error while searching:\n{}".format(traceback.format_exc()))
+        traceback.print_exc()
+    finally:
+        try:
+            client.close()
+        except Exception:
+            pass
+
+    response["result"] = result
+    response["changed"] = True
+    module.exit_json(**response)
+
+if __name__ == "__main__":
+    main()
+

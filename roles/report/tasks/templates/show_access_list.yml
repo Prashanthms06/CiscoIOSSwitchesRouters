@@ -1,0 +1,17 @@
+---
+- example: "Standard IP access list 1"
+  getval: '(?P<acl_type>\S+) IP access list (?P<acl_name>\S+)'
+  result:
+    "{{ acl_type }}":
+      acl_name: "{{ acl_name }}"
+      type: "{{ acl_type }}"
+  shared: True
+
+- example: "    10 deny   1.1.1.0, wildcard bits 0.0.0.255"
+  #getval: '    (?P<value>\S+) (?P<value1>\S+)   (?P<value2>\S+), wildcard bits (?P<value3>\S+)'
+  getval: '    ((^\s*).*)'
+  result:
+    "{{ acl_type }}":
+      acl_values:
+        #values: "{{ value }} {{ value1 }} {{ value2 }}, wildcard bits {{ value3 }}"
+         values: "{{ value }}"

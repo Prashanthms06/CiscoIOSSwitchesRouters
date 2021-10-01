@@ -1,0 +1,86 @@
+<html>
+<head>
+  <!-- Viewport options can make the page scale better on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+  <!-- CSS styling for our HTML report -->
+  {% include './stylesheet.css.j2' %}
+  </style>
+
+</head>
+
+<body>
+ <div style="background-image: url(psa_banner.jpeg); height: 400px; width: 100%; border: 1px solid black;"></div>
+  <!-- This is our left-hand menu and navigation bar.
+  We will generate links for each host, breaking them up by job status.
+  The color / style for failed and missing hosts can be tuned in playbook vars. -->
+
+  <div class="sidenav">
+    <p><a style="text-align:center;font-weight:bold;font-size:medium" href="#summary">Summary</a></p>
+    <hr>
+    <p>Host Results</p>
+    {% for item in ansible_play_hosts_all  %}
+    <a href="#{{ item }}">{{ item }}</a>
+    {% endfor %}
+    <hr>
+  </div>
+
+
+  <div class="content">
+
+    <h1 id="top">{{ title }}</h1>
+    <table>
+    <tr>
+    <td>Job Submission Date</td>
+    <td>{{ curr_date }}</td>
+    </tr>
+    <tr>
+    <td>Ansible Tower JobID</td>
+    <td>{{ tower_job_id | default('NA') }}</td>
+    </tr>
+    </table>
+    <br>
+    <br>
+    <hr>
+
+    <h1 id="summary">Summary</h1>
+
+    <p><strong>Total hosts scanned: {{ ansible_play_hosts_all|length }}</strong></p>
+    <hr>
+    <h1 id="report">ACL Report</h1>
+    {% for host in ansible_play_hosts_all  %}
+        <h2 id="{{ host }}">{{ host }}</h2>
+        <table>
+        <tr>
+        <th>Type</th>
+        <th>Name/Num</th>
+        <th>Entry</th>
+        <tr>
+        {% for acl_info in hostvars[host]['combined_acl_list'] %}
+        <tr>
+         <td>{{ acl_info.type }}</td>
+         <td>{{ acl_info.acl_name }}</td>
+         <td>
+         <ul>
+            {% for acl_entry in acl_info.acl_list %}
+            <li>{{ acl_entry }}</li>
+            {% endfor %}
+         </ul>
+         </td>
+        <tr>
+
+        {% endfor %}
+        <table>
+
+        <hr>
+    {% endfor %}
+
+
+
+  </div>
+
+
+</body>
+  <footer> &copy: <small><i>Port Authority of Singapore Ltd. All rights reserved.</i></small></footer>
+</html>

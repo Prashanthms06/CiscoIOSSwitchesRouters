@@ -1,0 +1,44 @@
+---
+- name: "ReportGeneration: Create reports/ folder to save reports"
+  run_once: yes
+  local_action:
+    module: file
+    path: "{{ reports_root_folder }}"
+    state: directory
+
+#Setting the facts for generating the HTML report
+- set_fact:
+    #title: "{{ title }}"
+    curr_date: "{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
+
+### Set the UUID of the path and use that as destination
+- set_fact:
+    current_report_folder: "{{ reports_root_folder }}"
+    #current_report_folder: "{{ reports_root_folder }}/<DateTime>/<UUID>"
+
+- debug:
+    msg: "Report {{ title }} is going to saved under {{ current_report_folder }}"
+
+- name: "ReportGeneration: Generating report"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  template:
+   src: "{{ report_template_name }}"
+   dest: "{{ current_report_folder }}/report.html"
+
+- name: "ReportGeneration: Copying images"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  copy:
+   src: "images/*"
+   dest: "{{ current_report_folder }}"
+
+- name: "ReportGeneration: Copying the java script libraries"
+  delegate_to: 127.0.0.1
+  run_once: yes
+  copy:
+    src: "javascript_lib/*"
+    dest: "{{ current_report_folder }}"
+
+
+###zip the current report folder and email.

@@ -10,33 +10,9 @@
 - debug:
    var: combined_acl_list
 
-- debug:
-    msg: "{{ item }}"
-  loop: "{{ lookup('inventory_hostnames', 'all', wantlist=True) }}"
+# now time to generate report
+- include_role: report
+  vars:
+    - report_template_name: "acl_report.j2"
+    - title: "ACL Job Status report"
 
-- name: Create reports/ folder to save reports
-  run_once: yes
-  local_action:
-    module: file
-    path: "./reports"
-    state: directory
-
-#Setting the facts for generating the HTML report
-- set_fact:
-    title: "ACL Job Status Report"
-    tower_id: "NA."
-    curr_date: "{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
-
-- name: Generate job report
-  delegate_to: 127.0.0.1
-  run_once: yes
-  template:
-   src: "./templates/acl_report.j2"
-   dest: "reports/report.html"
-
-- name: Generate job report
-  delegate_to: 127.0.0.1
-  run_once: yes
-  copy:
-   src: "./templates/psa_banner.jpeg"
-   dest: "reports"

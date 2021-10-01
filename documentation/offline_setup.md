@@ -15,7 +15,7 @@ pip3 install genie
 pip3 install pyats
 pip3 install ttp
 pip3 install scp
-
+pip install paramiko-expect
 ansible-galaxy install clay584.parse_genie
 
 ```
