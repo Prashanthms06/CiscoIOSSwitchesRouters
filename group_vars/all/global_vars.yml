@@ -226,3 +226,11 @@ sn_auth: {
  'username': 'tuas_sn_integration',
  'password': 'tU@3_S3rvic3N0w'
 }
+
+##ACL Report Variables for sending variables:
+ smtp_srv: {{ smtp_srv }}
+ smtp_user: {{ smtp_user }}
+ smtp_usr_passwd: {{ smtp_user_password}}
+ to_email_id: {{email_id }}
+
+
