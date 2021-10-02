@@ -8,8 +8,7 @@
 
 #Setting the facts for generating the HTML report
 - set_fact:
-    #title: "{{ title }}"
-    curr_date: "{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
+     curr_date: "{{lookup('pipe','date \"+%Y-%m-%d %H:%M\"')}}"
 
 - name: "ReportGeneration: Creating today's date directory"
   set_fact:
