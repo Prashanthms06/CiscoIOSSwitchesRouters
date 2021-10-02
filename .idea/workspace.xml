@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7e59414e-299f-45bf-b1b1-47a15f624945" name="Changes" comment="modified report mail.yml" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/acl_report" />
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="acl_report" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="acl-reports" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SWAP_SIDES_IN_COMPARE_BRANCHES" value="true" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="recentNewPullRequestHead">
+      <RepoCoordinatesHolder>
+        <option name="owner" value="som-shekhar" />
+        <option name="repository" value="CiscoIOSSwitchesRouters" />
+      </RepoCoordinatesHolder>
+    </option>
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="320f7785-0584-4b15-a5e7-a52db03b3cfc" />
+        <option name="url" value="https://github.com/Prashanthms06/CiscoIOSSwitchesRouters.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="ProjectId" id="1yRdY2lAVWAmkuSyl2XKEjjyZZ4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/roles/acl_config/tasks" />
+    <property name="settings.editor.selected.configurable" value="advanced.settings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\prash\PycharmProjects\CiscoIOSSwitchesRouters\roles\acl_config\tasks" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7e59414e-299f-45bf-b1b1-47a15f624945" name="Changes" comment="" />
+      <created>1632218381039</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1632218381039</updated>
+      <workItem from="1632218383048" duration="798000" />
+      <workItem from="1632226239362" duration="2143000" />
+    </task>
+    <task id="LOCAL-00001" summary="updated acl deletion">
+      <created>1632478985952</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1632478985952</updated>
+    </task>
+    <task id="LOCAL-00002" summary="updated acl documentation">
+      <created>1632486318067</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1632486318067</updated>
+    </task>
+    <task id="LOCAL-00003" summary="updated acl_checks.yml to archive and password protect the reports.">
+      <created>1632830287627</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1632830287627</updated>
+    </task>
+    <task id="LOCAL-00004" summary="updated acl_checks.yml to archive and password protect the reports.&#10;set_fact modified">
+      <created>1632840204568</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1632840204568</updated>
+    </task>
+    <task id="LOCAL-00005" summary="updated acl_checks.yml to archive and password protect the reports with uuid">
+      <created>1632985500017</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1632985500017</updated>
+    </task>
+    <task id="LOCAL-00006" summary="report and acl_config roles are updated. And acl_check_prelim.yml is added to chek prerequisites to get acl report">
+      <created>1633078563961</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1633078563961</updated>
+    </task>
+    <task id="LOCAL-00007" summary="modified reports mail.yml">
+      <created>1633106168421</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1633106168421</updated>
+    </task>
+    <task id="LOCAL-00008" summary="modified reports mail.yml">
+      <created>1633106909495</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1633106909495</updated>
+    </task>
+    <task id="LOCAL-00009" summary="modified reports mail.yml">
+      <created>1633107584102</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1633107584102</updated>
+    </task>
+    <task id="LOCAL-00010" summary="modified report mail.yml">
+      <created>1633107793450</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1633107793450</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="updated acl deletion" />
+    <MESSAGE value="updated acl documentation" />
+    <MESSAGE value="updated acl_checks.yml to archive and password protect the reports." />
+    <MESSAGE value="updated acl_checks.yml to archive and password protect the reports.&#10;set_fact modified" />
+    <MESSAGE value="updated acl_checks.yml to archive and password protect the reports with uuid" />
+    <MESSAGE value="report and acl_config roles are updated. And acl_check_prelim.yml is added to chek prerequisites to get acl report" />
+    <MESSAGE value="modified reports mail.yml" />
+    <MESSAGE value="modified report mail.yml" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified report mail.yml" />
+  </component>
+</project>
