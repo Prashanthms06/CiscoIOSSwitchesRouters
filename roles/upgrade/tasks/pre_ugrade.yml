@@ -56,38 +56,38 @@
 - set_fact:
    fw_path_on_device: "flash:{{ upgraded_fw_name }}"
 
-#- name: "PreUpgrade: Copying {{ upgraded_fw_name }} to device"
-#  command: "sshpass -p {{ ansible_ssh_pass }} scp {{ ios_fw_folder }}/{{ upgraded_fw_name }} {{ ansible_ssh_user }}@{{ inventory_hostname }}:{{ fw_path_on_device }}"
-#  async: 3600
-#  poll: 0
-#  register: copy_sleeper
+- name: "PreUpgrade: Copying {{ upgraded_fw_name }} to device"
+  command: "sshpass -p {{ ansible_ssh_pass }} scp {{ ios_fw_folder }}/{{ upgraded_fw_name }} {{ ansible_ssh_user }}@{{ inventory_hostname }}:{{ fw_path_on_device }}"
+  async: 3600
+  poll: 0
+  register: copy_sleeper
 ##
-#- name: 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
-#  block:
-#    - name : 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
-#      async_status:
-#       jid: "{{ copy_sleeper.ansible_job_id }}"
-#     register: copy_result
-#     until: copy_result.finished
-#     retries: 3600
-#     delay: 60
+- name: 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
+  block:
+    - name : 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
+      async_status:
+       jid: "{{ copy_sleeper.ansible_job_id }}"
+     register: copy_result
+     until: copy_result.finished
+     retries: 3600
+     delay: 60
   # using always block, so that irrespective of of whether the above task has failed or not, we need to disable the
   #scp on the device
-#  always:
-#    - name:  'PreUpgrade: Disabling the scp on the device'
-#      ios_command:
-#        commands:
-#          - "conf t"
-#          - "no ip scp server enable"
+  always:
+    - name:  'PreUpgrade: Disabling the scp on the device'
+      ios_command:
+        commands:
+          - "conf t"
+          - "no ip scp server enable"
 
 - name: "PreUpgrade: Dumping the status of copy command"
   debug:
    var: copy_result
 
 # we need to fail this job if the copy has failed
-#- fail:
- #  msg: "Unable to copy the firmware file {{ upgraded_fw_name }} to the device"
-  #when: not copy_result.finished
+- fail:
+   msg: "Unable to copy the firmware file {{ upgraded_fw_name }} to the device"
+  when: not copy_result.finished
 
 - debug:
     msg: "Successfully copied  the firmware file {{ upgraded_fw_name }} to the device"
@@ -99,12 +99,11 @@
 - name: "PreUpgrade: Verifying the MD5 hash of the file {{ upgraded_fw_name }}"
   ios_command:
     commands:
-      - "verify /md5 cat9k_iosxe.17.03.03.SPA.bin {{ fw_md5 }}"
+      - "verify /md5 {{ upgraded_fw_name } {{ fw_md5 }}"
   vars:
     #Command timeout of 10min
     ansible_command_timeout: 600
   register: md5_output
-
 
 - debug:
     msg: "MD5 value of the file {{ upgraded_fw_name }} is successfully verified."
