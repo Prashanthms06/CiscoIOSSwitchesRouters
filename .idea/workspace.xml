@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7e59414e-299f-45bf-b1b1-47a15f624945" name="Changes" comment="">
+    <list default="true" id="7e59414e-299f-45bf-b1b1-47a15f624945" name="Changes" comment="modified gobal vars">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group_vars/all/global_vars.yml" beforeDir="false" afterPath="$PROJECT_DIR$/group_vars/all/global_vars.yml" afterDir="false" />
     </list>
@@ -169,7 +169,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633194595959</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="modified gobal vars">
+      <created>1633195271519</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1633195271519</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,6 +203,7 @@
     <MESSAGE value="report and acl_config roles are updated. And acl_check_prelim.yml is added to chek prerequisites to get acl report" />
     <MESSAGE value="modified reports mail.yml" />
     <MESSAGE value="modified report mail.yml" />
-    <option name="LAST_COMMIT_MESSAGE" value="modified report mail.yml" />
+    <MESSAGE value="modified gobal vars" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified gobal vars" />
   </component>
 </project>
