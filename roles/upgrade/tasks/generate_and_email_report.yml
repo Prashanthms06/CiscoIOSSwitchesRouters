@@ -1,6 +1,7 @@
 ---
-# now time to generate report
-- include_role: report
+- name: "Upgrade: Generating report"
+  include_role:
+   name: report
   vars:
     - report_template_name: "upgrade_report.j2"
-    - title: "Cisco IOS Device Upgrad Status Report"
+    - title: "Cisco IOS Device Upgrade Status Report"

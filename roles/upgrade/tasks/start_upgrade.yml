@@ -15,6 +15,12 @@
 - name: "Upgrade: Save running config"
   ios_config:
      save_when: always
+  ignore_errors: true
+  register: save_run_cfg_output
+
+- debug:
+   msg: "Not able to execute the command copy running-config startup-config. Seems like authorization failed, but still proceeding."
+  when: save_run_cfg_output is not defined
 
 - name: "Upgrade: Starting to upgrade"
   ios_upgrade:

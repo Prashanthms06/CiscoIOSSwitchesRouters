@@ -30,14 +30,14 @@
   delegate_to: 127.0.0.1
   run_once: yes
   copy:
-   src: "images/*"
+   src: "images/"
    dest: "{{ current_report_folder }}"
 
 - name: "ReportGeneration: Copying the java script libraries"
   delegate_to: 127.0.0.1
   run_once: yes
   copy:
-    src: "javascript_lib/*"
+    src: "javascript_lib/"
     dest: "{{ current_report_folder }}"
 
 

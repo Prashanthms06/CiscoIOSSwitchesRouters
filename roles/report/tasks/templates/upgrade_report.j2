@@ -1,0 +1,109 @@
+<html>
+<head>
+  <!-- Viewport options can make the page scale better on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+  <!-- CSS styling for our HTML report -->
+  {% include './stylesheet.css.j2' %}
+  </style>
+
+</head>
+
+<body>
+ <div style="background-image: url(psa_banner.jpeg); height: 400px; width: 100%; border: 1px solid black;"></div>
+  <!-- This is our left-hand menu and navigation bar.
+  We will generate links for each host, breaking them up by job status.
+  The color / style for failed and missing hosts can be tuned in playbook vars. -->
+
+  <div class="sidenav">
+    <p><a style="text-align:center;font-weight:bold;font-size:medium" href="#summary">Summary</a></p>
+    <hr>
+    <p>Host Results</p>
+    {% for item in ansible_play_hosts_all  %}
+    <a href="#{{ item }}">{{ item }}</a>
+    {% endfor %}
+    <hr>
+  </div>
+
+
+  <div class="content">
+
+    <h1 id="top">{{ title }}</h1>
+    <table>
+    <tr>
+    <td>Job Submission Date</td>
+    <td>{{ curr_date }}</td>
+    </tr>
+    <tr>
+    <td>Ansible Tower JobID</td>
+    <td>{{ tower_job_id | default('NA') }}</td>
+    </tr>
+    </table>
+    <br>
+    <br>
+    <hr>
+
+    <h1 id="summary">Summary</h1>
+
+    <p><strong>Total hosts scanned: {{ ansible_play_hosts_all|length }}</strong></p>
+    <hr>
+    <h1 id="report">Upgrade Details</h1>
+    {% for host in ansible_play_hosts_all  %}
+        <h2 id="{{ host }}">{{ host }}</h2>
+        <h3 id="check_list">CheckList</h3>
+
+         <!-- Dumping the checklist -->
+        <table class="check_list_table">
+        {% for key in check_list %}
+        <tr>
+        <td>{{ key }}</td>
+        <td class="a">{{ host | fetch_symbol(hostvars,check_list[key]) }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+
+        <h3>DeviceInformation (PreUpgrade)</h3>
+            {% for information in pre_upgrade_info %}
+                <h4>{{ information }}</h4>
+                    <table>
+                        {% if information=="BasicInformation" or information=="FileSystemInformation" %}
+                            {% for item in pre_upgrade_info[information]['t_row'] %}
+                                <tr>
+                                    <td>{{ item.td_name }}</td>
+                                        {% if information=='BasicInformation' %}
+                                            <td> {{ hostvars[host]['old_version']['version'] | fetch_value(item.td_value) }}</td>
+                                        {% elif information=='FileSystemInformation' %}
+                                            <td>  {{ hostvars[host]['pre_disk_space'][0] | fetch_value(item.td_value) }}</td>
+                                        {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% elif information=="InterfaceStatus" %}
+                            <!-- add the headers -->
+                            <tr>
+                                 {% for header in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header }}</th>
+                                  {% endfor %}
+                            </tr>
+                            <!-- now add the data -->
+                            {% for key in hostvars[host]['pre_interface_list']['interfaces'] %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td class="a">{{ hostvars[host]['pre_interface_list']['interfaces'][key]['status'] | interface_status() }}</td>
+                                    <td>{{ hostvars[host]['pre_interface_list']['interfaces'][key]['type'] }} </td>
+                                    <td>{{ hostvars[host]['pre_interface_list']['interfaces'][key]['vlan'] }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    <table>
+            {% endfor %}
+
+        <hr>
+    {% endfor %}
+
+  </div>
+
+
+</body>
+  <footer>            &copy: <small><i>Port Authority of Singapore Ltd. All rights reserved.</i></small></footer>
+</html>

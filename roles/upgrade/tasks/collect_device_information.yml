@@ -1,6 +1,7 @@
 ---
 ### show file systems
-- ios_command:
+- name: "{{ task }}: Retrieving the flash filesystem information"
+  ios_command:
     commands:
       - "show flash:"
   register: flash_info
@@ -26,11 +27,13 @@
 - name: "{{ task }}: Fetch device version info"
   set_fact:
     "{{ version_var_name }}": "{{ version_info.stdout[0] | parse_genie(command='show version', os='iosxe') }}"
+    #cacheable: True
   delegate_to: localhost
 
 - name: "{{ task }}: Dumping device version information"
   debug:
     var: "{{ version_var_name }}"
+
 
 #########show int status
 - name: "{{ task }}: Fetching interfaces and their status"
@@ -41,12 +44,14 @@
 
 - name: "{{ task }}: Fetch interface status list"
   set_fact:
-    "{{ interface_var_name }}": "{{ interfaces_status_info.stdout[0] | parse_genie(command='show int status', os='iosxe') }}"
+     #cacheable: True
+     "{{ interface_var_name }}": "{{ interfaces_status_info.stdout[0] | parse_genie(command='show int status', os='iosxe') }}"
   delegate_to: localhost
 
 - name: "{{ task }}: Dumping interfaces"
   debug:
     var: "{{ interface_var_name }}"
+
 
 #########show cdp nei
 
@@ -58,6 +63,7 @@
 
 - name: "{{ task }}: Fetch cdp neighbours"
   set_fact:
+    #cacheable: True
     "{{ cdp_var_name }}": "{{ cdp_info.stdout[0] | parse_genie(command='show cdp neighbors', os='iosxe') }}"
   delegate_to: localhost
   ignore_errors: True
@@ -76,7 +82,8 @@
 
 - name: "{{ task }}: Fetch etherchannel summary"
   set_fact:
-    "{{ ether_var_name }}": "{{ ether_info.stdout[0] | parse_genie(command='show etherchannel summary', os='iosxe') }}"
+     #cacheable: True
+     "{{ ether_var_name }}": "{{ ether_info.stdout[0] | parse_genie(command='show etherchannel summary', os='iosxe') }}"
   delegate_to: localhost
 
 - name: "{{ task }}: Dumping etherchannel summary"
@@ -93,6 +100,7 @@
 
 - name: "{{ task }}: Fetch bgp summary"
   set_fact:
+    #cacheable: True
     "{{ bgp_var_name }}": "{{ bgp_info.stdout[0] | parse_genie(command='show bgp summary', os='ios') }}"
   delegate_to: localhost
   ignore_errors: True
@@ -112,6 +120,7 @@
 
 - name: "{{ task }}: Fetch bgp vpn4 summary"
   set_fact:
+    #cacheable: True
     "{{ bgp_vrf_var_name }}": "{{ bgp_vrf_info.stdout[0] | parse_genie(command='show bgp summary', os='iosxe') }}"
   delegate_to: localhost
   ignore_errors: True
@@ -134,7 +143,9 @@
 
 - name: "{{ task }}: Fetch ospfv3 summary"
   set_fact:
-    "{{ ospf_var_name }}": "{{ ospf_info.stdout[0] | parse_cli_ttp(ospf_template_path) }}"
+     #cacheable: True
+     "{{ ospf_var_name }}": "{{ ospf_info.stdout[0] | parse_cli_ttp(ospf_template_path) }}"
+
   delegate_to: localhost
   ignore_errors: True
   #Ignoring the errors if the cdp is disabled
@@ -153,6 +164,7 @@
 
 - name: "{{ task }}: Fetch layer3 interface status"
   set_fact:
+    #cacheable: True
     "{{ layer3_var_name }}": "{{ layer3_info.stdout[0] | parse_genie(command='show ip int brief', os='iosxe') }}"
   delegate_to: localhost
   ignore_errors: True
@@ -176,8 +188,9 @@
   register: vrf_info
 
 
-- name: "{{ task }}: Fetch layer3 interface status"
+- name: "{{ task }}: Fetch vrf status"
   set_fact:
+    #cacheable: True
     "{{ vrf_var_name }}": "{{ vrf_info.stdout[0] | parse_genie(command='show ip vrf int', os='ios', generic_tabular=True, generic_tabular_metadata=parse_genie) }}"
   delegate_to: localhost
   ignore_errors: True
@@ -188,11 +201,13 @@
     var: "{{ vrf_var_name }}"
 
 ###### show running-config
-- ios_command:
+- name: "{{ task }}: Fetching the running config"
+  ios_command:
    commands: "show running-config"
   register: run_cfg_info
 
 - set_fact:
+    #cacheable: True
     "{{ run_cfg_var_name }}": "{{ run_cfg_info.stdout[0] }}"
 
 - debug:

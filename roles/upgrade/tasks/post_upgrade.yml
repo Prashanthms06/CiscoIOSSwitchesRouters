@@ -19,7 +19,7 @@
     - fs_var_name: "post_fs_info"
 
 - debug:
-     msg: "Device has been upgraded from {{ oldversion.version }} to {{ new_version.version }}"
+     msg: "Device has been upgraded from {{ old_version.version.version }} to {{ new_version.version.version }}"
 
 # We will not fail the task if the device has not been upgraded to the newer version.
 
@@ -30,7 +30,35 @@
      ether_summary_diff: "{{ pre_ether_summary | compare_dict(post_ether_summary,'ether_summary') }}"
      layer3_summary_diff: "{{ pre_layer3_summary | compare_dict(post_layer3_summary,'layer3_summary') }}"
      vrf_summary_diff: "{{ pre_vrf_int_summary | compare_dict(post_vrf_int_summary,'vrf_summary') }}"
-     running_cfg_diff: "{{ pre_run_cfg | compare_dict(post_run_cfg,'running_cfg') }}"
+     #running_cfg_diff: "{{ pre_run_cfg | compare_dict(post_run_cfg,'running_config') }}"
+
+- name: "Testing: Find the config difference"
+  ios_config:
+    diff_against: intended
+    intended_config: "{{ pre_run_cfg }}"
+  register: run_cfg_diff
+  diff: yes
+
+- debug:
+   var: run_cfg_diff
+
+- debug:
+    msg: "Version diff {{ version_diff }}"
+
+- debug:
+    msg: "Interface status diff {{ interface_status_diff }}"
+
+- debug:
+   msg: "Ether channel summary diff {{ ether_summary_diff }}"
+
+- debug:
+    msg: "Layer3 summary diff {{ layer3_summary_diff }}"
+
+- debug:
+   msg: "VRF summary diff {{ vrf_summary_diff }}"
+
+- debug:
+   msg: "Running config dif {{ running_cfg_diff }}"
 
 
 #bgp, cdp and ospf may or may not be present. Hence calling their difference separately
@@ -51,4 +79,6 @@
 - set_fact:
    ospf_diff: "{{ pre_ospf_summary | compare_dict(post_ospf_summary,'ospf_summary') }}"
   when: pre_ospf_summary is defined and post_ospf_summary is defined
+
+
 

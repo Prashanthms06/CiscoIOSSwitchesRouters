@@ -1,3 +1,37 @@
 ---
 # path for ios firmware version
 ios_fw_folder: /Users/ksss/projects/CiscoIOS
+# variable for generating the checklist in the report
+#Key will be field name appearing in the report and value is the variable  in the ansible playbook
+check_list: {
+  "DeviceReachability" : "ping_status",
+  "FirmwareCopyOperation": "copy_result",
+  "MD5Verification": "md5_output",
+}
+
+pre_upgrade_info: {
+ "BasicInformation" : {
+              "t_row" : [
+                { "td_name" :"Switch Version" , "td_value": "version"},
+                { "td_name" :"Chassis Number" , "td_value": "chassis"},
+                { "td_name" :"HostName" , "td_value": "hostname"},
+                { "td_name" :"Device uptime" , "td_value": "uptime"},
+                { "td_name" :"Forty Gigabit Ethernet(Total)" , "td_value": "number_of_intfs.\"Forty Gigabit Ethernet\""},
+                { "td_name" :"Gigabit Ethernet(Total)" , "td_value": "number_of_intfs.\"Gigabit Ethernet\""},
+                { "td_name" :"Ten Gigabit Ethernet(Total)" , "td_value": "number_of_intfs.\"Ten Gigabit Ethernet\""},
+                { "td_name" :"TwentyFive Gigabit Ethernet(Total)" , "td_value": "number_of_intfs.\"TwentyFive Gigabit Ethernet\""},
+                { "td_name" :"Virtual Ethernet(Total)" , "td_value": "number_of_intfs.\"Virtual Ethernet\""},
+
+              ]
+
+          },
+   "FileSystemInformation": {
+     "t_row": [
+       { "td_name": "AvailableSpace(Bytes)" , "td_value": "flash_size.\"available_bytes\"" },
+       { "td_name": "UsedSpace(Bytes)" , "td_value": "flash_size.used" }
+     ]
+   },
+  "InterfaceStatus" :{
+          "t_header": ["Name","Status","Type","Vlan"]
+  }
+}

@@ -1,13 +1,11 @@
 ---
-
-- include_tasks: prelim.yml
-
-- include_tasks: pre_ugrade.yml
-
-- include_tasks: start_upgrade.yml
-
-- include_tasks: post_upgrade.yml
-
-- include_tasks: generate_and_email_report.yml
+- name: "Starting to upgrade"
+  block:
+   - include_tasks: prelim.yml
+   - include_tasks: pre_ugrade.yml
+   - include_tasks: start_upgrade.yml
+   - include_tasks: post_upgrade.yml
+  always:
+   - include_tasks: generate_and_email_report.yml
 
 
