@@ -61,16 +61,16 @@
   async: 3600
   poll: 0
   register: copy_sleeper
-##
+
 - name: 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
   block:
     - name : 'PreUpgrade: Check if the firmware file {{ upgraded_fw_name }} copy is  completed. '
       async_status:
        jid: "{{ copy_sleeper.ansible_job_id }}"
-     register: copy_result
-     until: copy_result.finished
-     retries: 3600
-     delay: 60
+      register: copy_result
+      until: copy_result.finished
+      retries: 3600
+      delay: 60
   # using always block, so that irrespective of of whether the above task has failed or not, we need to disable the
   #scp on the device
   always:
@@ -99,7 +99,7 @@
 - name: "PreUpgrade: Verifying the MD5 hash of the file {{ upgraded_fw_name }}"
   ios_command:
     commands:
-      - "verify /md5 {{ upgraded_fw_name } {{ fw_md5 }}"
+      - "verify /md5 cat9k_iosxe.17.03.03.SPA.bin {{ fw_md5 }}"
   vars:
     #Command timeout of 10min
     ansible_command_timeout: 600

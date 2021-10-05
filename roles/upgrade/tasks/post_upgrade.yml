@@ -58,7 +58,7 @@
    msg: "VRF summary diff {{ vrf_summary_diff }}"
 
 - debug:
-   msg: "Running config dif {{ running_cfg_diff }}"
+   msg: "Running config dif {{ run_cfg_diff }}"
 
 
 #bgp, cdp and ospf may or may not be present. Hence calling their difference separately

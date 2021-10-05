@@ -8,6 +8,21 @@
   {% include './stylesheet.css.j2' %}
   </style>
 
+<script src="jquery-3.6.0/jquery.min.js"></script>
+
+<!-- toggling the big table by clicking on the table header -->
+<script type="text/javascript">
+        $(document).ready(function() {
+
+            $('tbody > tr:not(".header")').hide();
+            $('tr.header').click(function() {
+                $(this).nextAll('tr').each(function() {
+                    $(this).toggle();
+                });
+            });
+        });
+    </script>
+
 </head>
 
 <body>
@@ -31,6 +46,10 @@
 
     <h1 id="top">{{ title }}</h1>
     <table>
+    <tr class="header">
+            <th>ParameterName</th>
+                <th>ParameterValue</th>
+        </tr>
     <tr>
     <td>Job Submission Date</td>
     <td>{{ curr_date }}</td>
@@ -52,9 +71,23 @@
     {% for host in ansible_play_hosts_all  %}
         <h2 id="{{ host }}">{{ host }}</h2>
         <h3 id="check_list">CheckList</h3>
+        <p class="table_header_info">This section describes the various operations performed before upgrading the device. <br> Please note that upgradation will start only
+        when the following operations are successfull.
+        <ol>
+         <li class="table_header_info">Device must be  reachable.</li>
+         <li class="table_header_info">Copy of firmware file must be successfull.</li>
+         <li class="table_header_info">MD5 verification of the file must be successfull.</li>
+        </ol>
+        <br>
+        (Click on the table header below to expand or collapse the table)
+        </p>
 
          <!-- Dumping the checklist -->
         <table class="check_list_table">
+        <tr class="header">
+            <th>ParameterName</th>
+                <th>ParameterValue</th>
+        </tr>
         {% for key in check_list %}
         <tr>
         <td>{{ key }}</td>
@@ -64,40 +97,163 @@
         </table>
 
         <h3>DeviceInformation (PreUpgrade)</h3>
+         <p class="table_header_info">This section captures various device information before upgradation.</p>
             {% for information in pre_upgrade_info %}
                 <h4>{{ information }}</h4>
+                {% if pre_upgrade_info[information]['pre_var_name'] in hostvars[host] %}
+                 <p class="table_header_info">{{ pre_upgrade_info[information]['section_description'] }}</p>
                     <table>
                         {% if information=="BasicInformation" or information=="FileSystemInformation" %}
+                                <tr class="header">
+                                    <th>ParameterName</th>
+                                    <th>ParameterValue</th>
+                                </tr>
                             {% for item in pre_upgrade_info[information]['t_row'] %}
                                 <tr>
                                     <td>{{ item.td_name }}</td>
                                         {% if information=='BasicInformation' %}
-                                            <td> {{ hostvars[host]['old_version']['version'] | fetch_value(item.td_value) }}</td>
+                                            <td> {{ hostvars[host]['old_version']['version'] | default("NA.(Please check if checklist are passed)") | fetch_value(item.td_value) }}</td>
                                         {% elif information=='FileSystemInformation' %}
-                                            <td>  {{ hostvars[host]['pre_disk_space'][0] | fetch_value(item.td_value) }}</td>
+                                            <td>  {{ hostvars[host]['pre_disk_space'][0] | default("NA.(Please check if checklist are passed)") | fetch_value(item.td_value) }}</td>
                                         {% endif %}
                                 </tr>
                             {% endfor %}
                         {% elif information=="InterfaceStatus" %}
                             <!-- add the headers -->
-                            <tr>
-                                 {% for header in pre_upgrade_info[information]['t_header'] %}
-                                    <th>{{ header }}</th>
+                            <tr class="header">
+                                 {% for header_info in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header_info }}</th>
                                   {% endfor %}
                             </tr>
                             <!-- now add the data -->
                             {% for key in hostvars[host]['pre_interface_list']['interfaces'] %}
                                 <tr>
                                     <td>{{ key }}</td>
-                                    <td class="a">{{ hostvars[host]['pre_interface_list']['interfaces'][key]['status'] | interface_status() }}</td>
+                                    <td class="a">{{ hostvars[host]['pre_interface_list']['interfaces'][key]['status'] | default("NA.(Please check if checklist are passed)") | interface_status() }}</td>
                                     <td>{{ hostvars[host]['pre_interface_list']['interfaces'][key]['type'] }} </td>
                                     <td>{{ hostvars[host]['pre_interface_list']['interfaces'][key]['vlan'] }}</td>
                                 </tr>
                             {% endfor %}
+
+                        {% elif information=="Layer3Summary" %}
+                            <!-- add the headers -->
+                            <tr class="header">
+                                 {% for header_info in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header_info }}</th>
+                                  {% endfor %}
+                            </tr>
+                            <!-- now add the data -->
+                            {% for key in hostvars[host]['pre_layer3_summary']['interface'] %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td class="a">{{ hostvars[host]['pre_layer3_summary']['interface'][key]['interface_is_ok'] | interface_status() }}</td>
+                                    <td>{{ hostvars[host]['pre_layer3_summary']['interface'][key]['ip_address'] }} </td>
+                                    <td class="a">{{ hostvars[host]['pre_layer3_summary']['interface'][key]['protocol']  | fetch_protocol_symbol() }}</td>
+                                    <td class="a">{{ hostvars[host]['pre_layer3_summary']['interface'][key]['status'] | interface_status() }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% elif information=="VRFSummary" %}
+                            <!-- add the headers -->
+                            <tr class="header">
+                                 {% for header_info in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header_info }}</th>
+                                  {% endfor %}
+                            </tr>
+                            <!-- now add the data -->
+                            {% for key in hostvars[host]['pre_vrf_int_summary'] %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ hostvars[host]['pre_vrf_int_summary'][key]['Interface '] }} </td>
+                                    <td>{{ hostvars[host]['pre_vrf_int_summary'][key]['IP-Address ']  }}</td>
+                                    <td>{{ hostvars[host]['pre_vrf_int_summary'][key]['VRF '] }} </td>
+                                    <td class="a">{{ hostvars[host]['pre_vrf_int_summary'][key]['Protocol ']  | fetch_protocol_symbol()}}</td>
+                                </tr>
+                            {% endfor %}
                         {% endif %}
                     <table>
+                    {% else %}
+                         <p class="table_header_info">{{ section_error_description }}</p>
+                    {% endif %}
             {% endfor %}
+         <h3>DeviceInformation (PostUpgrade)</h3>
+         <p class="table_header_info">This section captures various device information after upgradation.</p>
+            {% for information in pre_upgrade_info %}
+                <h4>{{ information }}</h4>
+                {% if pre_upgrade_info[information]['post_var_name'] in hostvars[host] %}
+                 <p class="table_header_info">{{ pre_upgrade_info[information]['section_description'] }}</p>
+                    <table>
+                        {% if information=="BasicInformation" or information=="FileSystemInformation" %}
+                                <tr class="header">
+                                    <th>ParameterName</th>
+                                    <th>ParameterValue</th>
+                                </tr>
+                            {% for item in pre_upgrade_info[information]['t_row'] %}
+                                <tr>
+                                    <td>{{ item.td_name }}</td>
+                                        {% if information=='BasicInformation' %}
+                                            <td> {{ hostvars[host]['new_version']['version'] | fetch_value(item.td_value) }}</td>
+                                        {% elif information=='FileSystemInformation' %}
+                                            <td>  {{ hostvars[host]['post_disk_space'][0] | fetch_value(item.td_value) }}</td>
+                                        {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% elif information=="InterfaceStatus" %}
+                            <!-- add the headers -->
+                            <tr class="header">
+                                 {% for header_info in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header_info }}</th>
+                                  {% endfor %}
+                            </tr>
+                            <!-- now add the data -->
+                            {% for key in hostvars[host]['post_interface_list']['interfaces'] %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td class="a">{{ hostvars[host]['post_interface_list']['interfaces'][key]['status'] | interface_status() }}</td>
+                                    <td>{{ hostvars[host]['post_interface_list']['interfaces'][key]['type'] }} </td>
+                                    <td>{{ hostvars[host]['post_interface_list']['interfaces'][key]['vlan'] }}</td>
+                                </tr>
+                            {% endfor %}
 
+                        {% elif information=="Layer3Summary" %}
+                            <!-- add the headers -->
+                            <tr class="header">
+                                 {% for header_info in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header_info }}</th>
+                                  {% endfor %}
+                            </tr>
+                            <!-- now add the data -->
+                            {% for key in hostvars[host]['post_layer3_summary']['interface'] %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td class="a">{{ hostvars[host]['post_layer3_summary']['interface'][key]['interface_is_ok'] | interface_status() }}</td>
+                                    <td>{{ hostvars[host]['post_layer3_summary']['interface'][key]['ip_address'] }} </td>
+                                    <td class="a">{{ hostvars[host]['post_layer3_summary']['interface'][key]['protocol']  | fetch_protocol_symbol() }}</td>
+                                    <td class="a">{{ hostvars[host]['post_layer3_summary']['interface'][key]['status'] | interface_status() }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% elif information=="VRFSummary" %}
+                            <!-- add the headers -->
+                            <tr class="header">
+                                 {% for header_info in pre_upgrade_info[information]['t_header'] %}
+                                    <th>{{ header_info }}</th>
+                                  {% endfor %}
+                            </tr>
+                            <!-- now add the data -->
+                            {% for key in hostvars[host]['post_vrf_int_summary'] %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>{{ hostvars[host]['post_vrf_int_summary'][key]['Interface '] }} </td>
+                                    <td>{{ hostvars[host]['post_vrf_int_summary'][key]['IP-Address ']  }}</td>
+                                    <td>{{ hostvars[host]['post_vrf_int_summary'][key]['VRF '] }} </td>
+                                    <td class="a">{{ hostvars[host]['post_vrf_int_summary'][key]['Protocol ']  | fetch_protocol_symbol()}}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    <table>
+                    {% else %}
+                        <p class="table_header_info">{{ section_error_description }}</p>
+                    {% endif %}
+            {% endfor %}
         <hr>
     {% endfor %}
 

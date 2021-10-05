@@ -11,6 +11,7 @@
   stat:
    path: "{{ ios_fw_folder }}/{{ upgraded_fw_name }}"
   register: upgrade_file_info
+  delegate_to: localhost
 
 - debug:
     var: upgrade_file_info
